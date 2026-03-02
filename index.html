@@ -70,7 +70,7 @@
     .btn-hero { background-color: var(--text-main); color: var(--bg-color); text-decoration: none; padding: 1.1rem 2.5rem; border-radius: 99px; font-weight: 700; font-size: 1.05rem; transition: transform 0.3s ease, box-shadow 0.3s; }
     .btn-hero:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
 
-    /* --- 4. 프로젝트 섹션 (Grid 아키텍처 도입) --- */
+    /* --- 4. 프로젝트 섹션 (Grid) --- */
     .project-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 2rem; }
     .project-card { 
       background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); 
@@ -140,8 +140,20 @@
     
     /* 모달 내 폼 및 댓글 영역 */
     .interaction-area { border-top: 1px solid var(--border-color); padding-top: 2rem; }
+    .action-row { display: flex; gap: 1rem; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; }
+    
     .btn-action { background: var(--bg-color); color: var(--text-main); border: 1px solid var(--border-color); padding: 0.7rem 1.2rem; border-radius: 99px; font-weight: 700; font-size: 0.95rem; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
     .btn-action:hover { border-color: var(--text-main); }
+    
+    /* 서비스 둘러보기 CTA 버튼 스타일 */
+    .btn-visit { 
+      background: var(--vibe-blue); color: #fff; text-decoration: none; 
+      padding: 0.7rem 1.5rem; border-radius: 99px; font-weight: 700; font-size: 0.95rem; 
+      transition: transform 0.2s, box-shadow 0.2s; display: inline-flex; align-items: center; gap: 0.3rem;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2); white-space: nowrap;
+    }
+    .btn-visit:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3); color: #fff; }
+
     .comment-list { background: var(--bg-color); border-radius: 16px; padding: 1.5rem; margin: 1.5rem 0; max-height: 250px; overflow-y: auto; border: 1px solid var(--border-color); }
     .comment-item { margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px dashed var(--border-color); font-size: 0.95rem; }
     .comment-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
@@ -151,7 +163,6 @@
     .comment-form { display: flex; gap: 0.5rem; background: var(--bg-color); padding: 0.4rem; border-radius: 99px; border: 1px solid var(--border-color); }
     .comment-input { flex: 1; padding: 0.8rem 1rem; border: none; background: transparent; color: var(--text-main); font-family: inherit; font-size: 0.95rem; outline: none; }
     .comment-input.author { flex: 0.3; border-right: 1px solid var(--border-color); border-radius: 0; }
-    /* ★ 버튼 글자 가로 유지 핵심 코드 */
     .btn-submit-comment { background: var(--text-main); color: var(--bg-color); border: none; padding: 0 1.5rem; border-radius: 99px; font-weight: 700; cursor: pointer; transition: transform 0.2s; white-space: nowrap; flex-shrink: 0; }
     .btn-submit-comment:hover { transform: scale(1.05); }
     @media (max-width: 600px) { .comment-form { flex-direction: column; border-radius: 16px; padding: 0.8rem; } .comment-input.author { border-right: none; border-bottom: 1px solid var(--border-color); } .btn-submit-comment { padding: 1rem; border-radius: 12px; } }
@@ -190,8 +201,8 @@
 
   <main>
     <section class="hero">
-      <h1>개발자 아니어도 괜찮아!<br><span class="blue-text">AI 바이브 코딩 랩 🧪</span></h1>
-      <p>아이디어를 현실로. AI와 함께 만드는 1인 개발 생태계.</p>
+      <h1>개발자 아니어도 괜찮아!<br><span class="blue-text">AI 바이브 코딩 랩</span> 🧪</h1>
+      <p>아이디어를 현실로! AI와 함께 만드는 1인 개발 생태계</p>
       <a href="#projects-section" class="btn-hero">프로젝트 둘러보기 ↓</a>
     </section>
 
@@ -226,16 +237,14 @@
     </section>
   </main>
 
-  <div id="project-modal" class="modal-overlay">
-    </div>
+  <div id="project-modal" class="modal-overlay"></div>
 
   <div id="custom-toast" class="toast"></div>
 
   <script>
     // ★ 실제 구글 앱스 스크립트 웹앱 URL 입력 (액세스: 모든 사용자)
-    const GAS_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwLbyHRFLAzjNG0aacWabwdlZseYd3poYyPZ4KLCrJ0HWwtPtn6E51k6oFFzG0wyWkIKg/exec';
+    const GAS_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwjWz-_qAwgVkn5DAx_UNgZxh_fsIypktqJdFhCCcM05wgWZPgzBnLFb2qzGzMzp41FRA/exec';
 
-    // 전역 상태 (모달에서 데이터 조회를 위해 저장)
     let globalData = { projects: [], comments: [], socials: [] };
 
     document.addEventListener('DOMContentLoaded', () => {
@@ -279,7 +288,7 @@
       try {
         const response = await fetch(GAS_WEB_APP_URL);
         const data = await response.json();
-        globalData = data; // 데이터 전역 저장
+        globalData = data; 
         renderProjects(data.projects, data.comments);
         renderSocials(data.socials);
       } catch (error) {
@@ -288,7 +297,6 @@
       }
     }
 
-    // --- 새로운 그리드 렌더링 함수 ---
     function renderProjects(projects, comments) {
       const container = document.getElementById('project-container');
       container.innerHTML = '';
@@ -299,7 +307,6 @@
       }
 
       projects.forEach(proj => {
-        // 프로젝트 카드 클릭 시 해당 ID를 모달 함수로 넘김
         const card = document.createElement('div');
         card.className = 'project-card';
         card.onclick = () => openModal(proj.id); 
@@ -324,7 +331,6 @@
       });
     }
 
-    // --- 새로운 상세 모달 창 함수 ---
     function openModal(projectId) {
       const proj = globalData.projects.find(p => p.id == projectId);
       if(!proj) return;
@@ -336,6 +342,12 @@
           <span class="comment-date">${c.date ? new Date(c.date).toLocaleDateString() : ''}</span>
         </div>`
       ).join('');
+
+      // ★ [ULTIMATE BUG FIX] 철벽 방어 로직 적용
+      // 문자열 변환, 양쪽 공백 제거 후 'http'로 시작하는 진짜 주소인지 검증합니다.
+      const rawLink = String(proj.link || '').trim();
+      const hasValidLink = rawLink.startsWith('http://') || rawLink.startsWith('https://');
+      const visitCtaHTML = hasValidLink ? `<a href="${rawLink}" target="_blank" class="btn-visit">서비스 둘러보기 ↗</a>` : '';
 
       const modal = document.getElementById('project-modal');
       modal.innerHTML = `
@@ -352,6 +364,7 @@
             <div class="interaction-area">
               <div class="action-row">
                 <button class="btn-action" onclick="handleLike('${proj.id}', this)">❤️ 좋아요 (${proj.likes || 0})</button>
+                ${visitCtaHTML}
               </div>
               <div class="comment-list" id="comments-${proj.id}">
                 ${commentsHTML || '<div style="color:#a1a1aa; font-size: 0.95rem;">첫 피드백을 남겨주세요.</div>'}
@@ -367,21 +380,19 @@
       `;
       
       modal.classList.add('active');
-      document.body.style.overflow = 'hidden'; // 뒤에 있는 배경 스크롤 방지
+      document.body.style.overflow = 'hidden'; 
     }
 
     function closeModal() {
       const modal = document.getElementById('project-modal');
       modal.classList.remove('active');
       document.body.style.overflow = '';
-      
-      // 모달 닫을 때 데이터 새로 갱신 (좋아요/댓글 쓴거 메인 화면 반영 위함)
       fetchData(); 
     }
 
     function setupModalClose() {
       const modal = document.getElementById('project-modal');
-      modal.addEventListener('click', closeModal); // 어두운 배경 클릭 시 닫기
+      modal.addEventListener('click', closeModal); 
     }
 
     function renderSocials(socials) {
@@ -426,7 +437,6 @@
       try {
         await fetch(GAS_WEB_APP_URL, { method: 'POST', body: JSON.stringify({ action: 'comment', projectId, name, text }) });
         showToast('✅ 피드백 등록 완료');
-        // 모달창 내에 작성한 댓글 즉시 UI에 추가
         const commentList = document.getElementById(`comments-${projectId}`);
         if(commentList.innerHTML.includes('첫 피드백을 남겨주세요')) commentList.innerHTML = '';
         commentList.innerHTML += `<div class="comment-item"><span class="comment-user">${name}</span> ${text} <span class="comment-date">지금</span></div>`;
