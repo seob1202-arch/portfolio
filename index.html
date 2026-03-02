@@ -56,7 +56,13 @@
     .nav-links a:hover { opacity: 1; color: var(--vibe-blue); }
     .theme-icon { font-size: 1.2rem; cursor: pointer; background: none; border: none; padding: 0; transition: transform 0.3s ease; }
     .theme-icon:hover { transform: scale(1.15) rotate(10deg); }
-    @media (max-width: 768px) { nav { width: 90%; justify-content: space-between; gap: 1rem; padding: 0.8rem 1.5rem; } .nav-links a { display: none; } }
+
+    @media (max-width: 768px) { 
+      nav { width: 90%; justify-content: space-between; gap: 1rem; padding: 0.8rem 1.5rem; } 
+      .nav-links a { display: none; } 
+      /* 모바일 전용 줄바꿈 CSS */
+      .hero p span { display: block; }
+    }
 
     main { max-width: 1100px; margin: 0 auto; padding: 8rem 1.5rem 6rem; }
     section { margin-bottom: 8rem; }
@@ -64,9 +70,9 @@
     
     /* --- 3. 헤더 (Hero) --- */
     .hero { min-height: 50vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; margin-bottom: 6rem; }
-    .hero h1 { font-size: clamp(2rem, 5vw, 4.2rem); font-weight: 800; letter-spacing: -0.04em; margin-bottom: 1.5rem; line-height: 1.2; word-break: keep-all; }
+    .hero h1 { font-size: clamp(1.8rem, 5vw, 4.2rem); font-weight: 800; letter-spacing: -0.04em; margin-bottom: 1.5rem; line-height: 1.2; word-break: keep-all; }
     .hero h1 .blue-text { color: var(--vibe-blue); background: linear-gradient(135deg, var(--vibe-blue), #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    .hero p { color: var(--text-muted); font-size: 1.2rem; font-weight: 500; max-width: 550px; word-break: keep-all; margin-bottom: 3rem; }
+    .hero p { color: var(--text-muted); font-size: 1.2rem; font-weight: 500; max-width: 600px; word-break: keep-all; margin-bottom: 3rem; }
     .btn-hero { background-color: var(--text-main); color: var(--bg-color); text-decoration: none; padding: 1.1rem 2.5rem; border-radius: 99px; font-weight: 700; font-size: 1.05rem; transition: transform 0.3s ease, box-shadow 0.3s; }
     .btn-hero:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
 
@@ -138,14 +144,11 @@
     .modal-title { font-size: 2rem; font-weight: 800; }
     .modal-desc { font-size: 1.1rem; color: var(--text-muted); margin-bottom: 2rem; }
     
-    /* 모달 내 폼 및 댓글 영역 */
     .interaction-area { border-top: 1px solid var(--border-color); padding-top: 2rem; }
     .action-row { display: flex; gap: 1rem; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; }
-    
     .btn-action { background: var(--bg-color); color: var(--text-main); border: 1px solid var(--border-color); padding: 0.7rem 1.2rem; border-radius: 99px; font-weight: 700; font-size: 0.95rem; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
     .btn-action:hover { border-color: var(--text-main); }
     
-    /* 서비스 둘러보기 CTA 버튼 스타일 */
     .btn-visit { 
       background: var(--vibe-blue); color: #fff; text-decoration: none; 
       padding: 0.7rem 1.5rem; border-radius: 99px; font-weight: 700; font-size: 0.95rem; 
@@ -163,8 +166,10 @@
     .comment-form { display: flex; gap: 0.5rem; background: var(--bg-color); padding: 0.4rem; border-radius: 99px; border: 1px solid var(--border-color); }
     .comment-input { flex: 1; padding: 0.8rem 1rem; border: none; background: transparent; color: var(--text-main); font-family: inherit; font-size: 0.95rem; outline: none; }
     .comment-input.author { flex: 0.3; border-right: 1px solid var(--border-color); border-radius: 0; }
+    /* 버튼 글자 가로 유지 고정 코드 */
     .btn-submit-comment { background: var(--text-main); color: var(--bg-color); border: none; padding: 0 1.5rem; border-radius: 99px; font-weight: 700; cursor: pointer; transition: transform 0.2s; white-space: nowrap; flex-shrink: 0; }
     .btn-submit-comment:hover { transform: scale(1.05); }
+    
     @media (max-width: 600px) { .comment-form { flex-direction: column; border-radius: 16px; padding: 0.8rem; } .comment-input.author { border-right: none; border-bottom: 1px solid var(--border-color); } .btn-submit-comment { padding: 1rem; border-radius: 12px; } }
 
     /* --- 7. 연락처 섹션 --- */
@@ -202,7 +207,10 @@
   <main>
     <section class="hero">
       <h1>개발자 아니어도 괜찮아!<br><span class="blue-text">AI 바이브 코딩 랩</span> 🧪</h1>
-      <p>아이디어를 현실로! AI와 함께 만드는 1인 개발 생태계</p>
+      <p>
+        <span>아이디어를 현실로!</span> 
+        <span>AI와 함께 만드는 1인 개발 생태계</span>
+      </p>
       <a href="#projects-section" class="btn-hero">프로젝트 둘러보기 ↓</a>
     </section>
 
@@ -343,8 +351,7 @@
         </div>`
       ).join('');
 
-      // ★ [ULTIMATE BUG FIX] 철벽 방어 로직 적용
-      // 문자열 변환, 양쪽 공백 제거 후 'http'로 시작하는 진짜 주소인지 검증합니다.
+      // 철벽 방어 로직 적용
       const rawLink = String(proj.link || '').trim();
       const hasValidLink = rawLink.startsWith('http://') || rawLink.startsWith('https://');
       const visitCtaHTML = hasValidLink ? `<a href="${rawLink}" target="_blank" class="btn-visit">서비스 둘러보기 ↗</a>` : '';
