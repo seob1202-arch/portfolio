@@ -267,28 +267,29 @@
     });
 
     // ★ [핵심 기능] 구글 드라이브 링크 자동 변환 함수
+    // ✅ 수정: uc?export=view → thumbnail 방식으로 변경 (구글 외부 임베딩 차단 이슈 해결)
     function getSafeImageUrl(url) {
       if (!url) return '';
       const strUrl = String(url).trim();
       let fileId = '';
-      
+
       // 1. /file/d/ 형식 매칭 (공유 링크 복사 시 형태)
       if (strUrl.includes('/file/d/')) {
         const match = strUrl.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
         if (match) fileId = match[1];
-      } 
+      }
       // 2. id= 형식 매칭 (기타 구글 드라이브 형식)
       else if (strUrl.includes('id=')) {
         const match = strUrl.match(/[?&]id=([a-zA-Z0-9_-]+)/);
         if (match) fileId = match[1];
       }
 
-      // ID가 정상적으로 추출되었다면 썸네일 출력 전용 URL로 강제 변환
+      // ✅ ID가 추출되면 thumbnail 엔드포인트로 변환 (sz=w800: 출력 너비 800px)
       if (fileId) {
-        return `https://drive.google.com/uc?export=view&id=${fileId}`;
+        return `https://drive.google.com/thumbnail?id=${fileId}&sz=w800`;
       }
-      
-      // 구글 드라이브 링크가 아니면 원본 주소 그대로 뱉어냄 (깃허브 등 호환용)
+
+      // 구글 드라이브 링크가 아니면 원본 주소 그대로 반환 (GitHub 등 호환)
       return strUrl;
     }
 
