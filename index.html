@@ -150,7 +150,7 @@
     .comment-user { font-weight: 800; margin-right: 0.5rem; color: var(--text-main); }
     .comment-date { font-size: 0.8rem; color: var(--text-muted); }
     
-    .comment-form { display: flex; gap: 0.5rem; background: var(--bg-color); padding: 0.4rem; border-radius: 99px; border: 1px solid var(--border-color); }
+    .comment-form { display: flex; gap: 0.5rem; background: var(--bg-color); padding: 0.4rem; border-radius: 99px; border: 1px solid var(--border-color); transition: all 0.3s ease; }
     .comment-input { flex: 1; padding: 0.8rem 1rem; border: none; background: transparent; color: var(--text-main); font-family: inherit; font-size: 0.95rem; outline: none; }
     .comment-input.author { flex: 0.3; border-right: 1px solid var(--border-color); border-radius: 0; }
     .btn-submit-comment { background: var(--text-main); color: var(--bg-color); border: none; padding: 0 1.5rem; border-radius: 99px; font-weight: 700; cursor: pointer; transition: transform 0.2s; white-space: nowrap; flex-shrink: 0; font-family: inherit; }
@@ -174,7 +174,7 @@
     .toast { position: fixed; top: -100px; left: 50%; transform: translateX(-50%) scale(0.9); background-color: var(--text-main); color: var(--bg-color); padding: 1rem 2rem; border-radius: 99px; font-weight: 700; font-size: 0.95rem; box-shadow: 0 20px 40px rgba(0,0,0,0.2); backdrop-filter: blur(10px); transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); opacity: 0; z-index: 9999; pointer-events: none; white-space: nowrap; }
     .toast.show { top: 40px; transform: translateX(-50%) scale(1); opacity: 1; }
 
-    /* ★ 모바일 최적화 */
+    /* ★ 모바일 최적화 수정 사항 */
     @media (max-width: 768px) { 
       nav { width: 90%; justify-content: space-between; gap: 1rem; padding: 0.8rem 1.5rem; } 
       .nav-links a { display: none; } 
@@ -191,7 +191,12 @@
       .modal-close { top: 1rem; right: 1rem; background: var(--bg-color); box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
       .action-row { display: flex; width: 100%; gap: 0.5rem; }
       .btn-action, .btn-visit { flex: 1; padding: 0.9rem 0; font-size: 0.9rem; }
-      .comment-form { flex-direction: column; border-radius: 16px; padding: 0.8rem; } 
+      
+      /* [추가] 모바일에서 폼이 키보드에 가리지 않도록 하단 스크롤 여백 대폭 추가 */
+      .comment-form { 
+        flex-direction: column; border-radius: 16px; padding: 0.8rem; 
+        margin-bottom: 25vh; 
+      } 
       .comment-input.author { border-right: none; border-bottom: 1px solid var(--border-color); } 
       .btn-submit-comment { padding: 1rem; border-radius: 12px; margin-top: 0.5rem; width: 100%; }
     }
@@ -254,9 +259,7 @@
   <div id="custom-toast" class="toast"></div>
 
   <script>
-    // ★ 실제 구글 앱스 스크립트 웹앱 URL 입력 (액세스: 모든 사용자)
     const GAS_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwjWz-_qAwgVkn5DAx_UNgZxh_fsIypktqJdFhCCcM05wgWZPgzBnLFb2qzGzMzp41FRA/exec';
-
     let globalData = { projects: [], comments: [], socials: [] };
 
     document.addEventListener('DOMContentLoaded', () => {
@@ -266,31 +269,31 @@
       setupModalClose();
     });
 
-    // ★ [핵심 기능] 구글 드라이브 링크 자동 변환 함수
-    // ✅ 수정: uc?export=view → thumbnail 방식으로 변경 (구글 외부 임베딩 차단 이슈 해결)
+    // 구글 드라이브 링크 자동 변환 함수
     function getSafeImageUrl(url) {
       if (!url) return '';
       const strUrl = String(url).trim();
       let fileId = '';
 
-      // 1. /file/d/ 형식 매칭 (공유 링크 복사 시 형태)
       if (strUrl.includes('/file/d/')) {
         const match = strUrl.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
         if (match) fileId = match[1];
-      }
-      // 2. id= 형식 매칭 (기타 구글 드라이브 형식)
-      else if (strUrl.includes('id=')) {
+      } else if (strUrl.includes('id=')) {
         const match = strUrl.match(/[?&]id=([a-zA-Z0-9_-]+)/);
         if (match) fileId = match[1];
       }
 
-      // ✅ ID가 추출되면 thumbnail 엔드포인트로 변환 (sz=w800: 출력 너비 800px)
       if (fileId) {
         return `https://drive.google.com/thumbnail?id=${fileId}&sz=w800`;
       }
-
-      // 구글 드라이브 링크가 아니면 원본 주소 그대로 반환 (GitHub 등 호환)
       return strUrl;
+    }
+
+    // 모바일 인풋 클릭 시 스크롤 위치 조정 함수
+    function handleInputFocus(element) {
+      setTimeout(() => {
+        element.scrollIntoView({ behavior: "smooth", block: "center" });
+      }, 300);
     }
 
     function initThemeToggle() {
@@ -314,6 +317,7 @@
       toastTimeout = setTimeout(() => toast.classList.remove('show'), 3000); 
     }
 
+    // [수정] 데이터 로딩 SWR (Stale-While-Revalidate) 캐싱 적용
     async function fetchData() {
       const projContainer = document.getElementById('project-container');
       const socialContainer = document.getElementById('socials-container');
@@ -324,15 +328,34 @@
         return;
       }
 
+      // 1. 로컬 스토리지에 캐시된 데이터가 있다면 즉시 렌더링 (로딩 대기시간 제로 체감)
+      const cachedData = localStorage.getItem('vibe_lab_data');
+      if (cachedData) {
+        try {
+          const parsedCache = JSON.parse(cachedData);
+          globalData = parsedCache;
+          renderProjects(parsedCache.projects, parsedCache.comments);
+          renderSocials(parsedCache.socials);
+        } catch(e) { console.error("Cache parsing error", e); }
+      }
+
       try {
+        // 2. 백그라운드에서 조용히 구글 앱스 스크립트 최신 데이터 가져오기
         const response = await fetch(GAS_WEB_APP_URL);
         const data = await response.json();
-        globalData = data; 
-        renderProjects(data.projects, data.comments);
-        renderSocials(data.socials);
+        
+        // 3. 기존 데이터와 새로 가져온 데이터가 다를 때만 화면 업데이트 및 캐시 저장
+        if (JSON.stringify(globalData) !== JSON.stringify(data)) {
+          globalData = data; 
+          localStorage.setItem('vibe_lab_data', JSON.stringify(data));
+          renderProjects(data.projects, data.comments);
+          renderSocials(data.socials);
+        }
       } catch (error) {
-        projContainer.innerHTML = `<div class="loader">데이터 연결 실패</div>`;
-        socialContainer.innerHTML = '';
+        if (!cachedData) { // 캐시마저 없는데 에러가 났을 때만 실패 문구 표기
+          projContainer.innerHTML = `<div class="loader">데이터 연결 실패</div>`;
+          socialContainer.innerHTML = '';
+        }
       }
     }
 
@@ -352,8 +375,6 @@
 
         const likesCount = proj.likes || 0;
         const commentsCount = comments.filter(c => c.projectId == proj.id).length;
-        
-        // ★ 이미지 렌더링 시 자동 변환 함수 거치기
         const safeImgUrl = getSafeImageUrl(proj.image);
 
         card.innerHTML = `
@@ -388,11 +409,11 @@
       const rawLink = String(proj.link || '').trim();
       const hasValidLink = rawLink.startsWith('http://') || rawLink.startsWith('https://');
       const visitCtaHTML = hasValidLink ? `<a href="${rawLink}" target="_blank" class="btn-visit">서비스 둘러보기 ↗</a>` : '';
-
-      // ★ 모달 내부 이미지도 자동 변환 함수 적용
       const safeImgUrl = getSafeImageUrl(proj.image);
 
       const modal = document.getElementById('project-modal');
+      
+      // [수정] 모달 내 인풋 창에 onfocus 이벤트(handleInputFocus)를 추가하여 화면 중앙으로 끌어오기
       modal.innerHTML = `
         <div class="modal-content" onclick="event.stopPropagation()">
           <button class="modal-close" onclick="closeModal()">✕</button>
@@ -413,8 +434,8 @@
                 ${commentsHTML || '<div style="color:#a1a1aa; font-size: 0.95rem;">첫 피드백을 남겨주세요.</div>'}
               </div>
               <form class="comment-form" onsubmit="handleComment(event, '${proj.id}')">
-                <input type="text" class="comment-input author" id="name-${proj.id}" placeholder="Name" required>
-                <input type="text" class="comment-input text" id="text-${proj.id}" placeholder="피드백 남기기" required>
+                <input type="text" class="comment-input author" id="name-${proj.id}" placeholder="Name" required onfocus="handleInputFocus(this)">
+                <input type="text" class="comment-input text" id="text-${proj.id}" placeholder="피드백 남기기" required onfocus="handleInputFocus(this)">
                 <button type="submit" class="btn-submit-comment">등록</button>
               </form>
             </div>
