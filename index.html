@@ -155,6 +155,25 @@
     .comment-input.author { flex: 0.3; border-right: 1px solid var(--border-color); border-radius: 0; }
     .btn-submit-comment { background: var(--text-main); color: var(--bg-color); border: none; padding: 0 1.5rem; border-radius: 99px; font-weight: 700; cursor: pointer; transition: transform 0.2s; white-space: nowrap; flex-shrink: 0; font-family: inherit; }
     .btn-submit-comment:hover { transform: scale(1.05); }
+
+    /* [추가] 모달 하단 닫기 버튼 스타일 */
+    .btn-close-bottom {
+      width: 100%;
+      background: var(--bg-color);
+      color: var(--text-muted);
+      border: 1px solid var(--border-color);
+      padding: 1rem;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-top: 1rem;
+    }
+    .btn-close-bottom:hover {
+      background: var(--border-color);
+      color: var(--text-main);
+    }
     
     /* --- 7. 연락처 섹션 --- */
     .contact-container { background: var(--bg-card); border-radius: var(--radius-xl); padding: 4rem; border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
@@ -174,7 +193,7 @@
     .toast { position: fixed; top: -100px; left: 50%; transform: translateX(-50%) scale(0.9); background-color: var(--text-main); color: var(--bg-color); padding: 1rem 2rem; border-radius: 99px; font-weight: 700; font-size: 0.95rem; box-shadow: 0 20px 40px rgba(0,0,0,0.2); backdrop-filter: blur(10px); transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); opacity: 0; z-index: 9999; pointer-events: none; white-space: nowrap; }
     .toast.show { top: 40px; transform: translateX(-50%) scale(1); opacity: 1; }
 
-    /* ★ 모바일 최적화 수정 사항 (키보드 대응 완벽 적용) */
+    /* ★ 모바일 최적화 수정 사항 (키보드 대응 포함) */
     @media (max-width: 768px) { 
       nav { width: 90%; justify-content: space-between; gap: 1rem; padding: 0.8rem 1.5rem; } 
       .nav-links a { display: none; } 
@@ -183,7 +202,6 @@
       
       .modal-overlay { align-items: flex-end; padding: 0; }
       
-      /* [수정] 부드러운 여백 전환 효과 추가 및 dvh 사용 */
       .modal-content { 
         border-radius: var(--radius-xl) var(--radius-xl) 0 0; 
         max-height: 85dvh; 
@@ -193,7 +211,6 @@
       }
       .modal-overlay.active .modal-content { transform: translateY(0); }
       
-      /* [핵심 추가] 키보드가 열렸을 때 모달 내부 하단에 거대한 공간(50vh) 생성 */
       .modal-content.keyboard-open {
         padding-bottom: 50vh !important;
       }
@@ -206,7 +223,6 @@
       .action-row { display: flex; width: 100%; gap: 0.5rem; }
       .btn-action, .btn-visit { flex: 1; padding: 0.9rem 0; font-size: 0.9rem; }
       
-      /* 기존 margin-bottom 삭제 */
       .comment-form { 
         flex-direction: column; border-radius: 16px; padding: 0.8rem; 
       } 
@@ -282,6 +298,15 @@
       setupModalClose();
     });
 
+    // [추가] 사용자가 브라우저나 기기의 물리적 '뒤로 가기' 버튼을 눌렀을 때 감지하는 로직
+    window.addEventListener('popstate', function(event) {
+      const modal = document.getElementById('project-modal');
+      // 모달이 띄워져 있는 상태에서 뒤로 가기를 눌렀다면 페이지 이탈을 막고 모달만 닫음
+      if (modal.classList.contains('active')) {
+        closeModal(true); // true = 뒤로 가기 버튼에 의해 닫힘을 의미
+      }
+    });
+
     function getSafeImageUrl(url) {
       if (!url) return '';
       const strUrl = String(url).trim();
@@ -301,24 +326,20 @@
       return strUrl;
     }
 
-    // [수정] 모바일 인풋 클릭 시 스크롤 위치 강제 조정 함수
     function handleInputFocus(element) {
       if (window.innerWidth <= 768) {
         const modalContent = document.querySelector('.modal-content');
-        modalContent.classList.add('keyboard-open'); // 하단 50vh 여백 생성
+        modalContent.classList.add('keyboard-open'); 
 
-        // 안드로이드 키보드가 화면에 올라오는 시간(약 400ms)을 기다린 후 스크롤
         setTimeout(() => {
           element.scrollIntoView({ behavior: "smooth", block: "center" });
         }, 400);
       }
     }
 
-    // [추가] 키보드가 내려갈 때 여백 원상복구
     function handleInputBlur() {
       if (window.innerWidth <= 768) {
         const modalContent = document.querySelector('.modal-content');
-        // 다른 입력창으로 바로 넘어가는 경우를 대비해 약간의 지연 시간을 줌
         setTimeout(() => {
           if (document.activeElement.tagName !== 'INPUT') {
             modalContent.classList.remove('keyboard-open');
@@ -440,7 +461,7 @@
 
       const modal = document.getElementById('project-modal');
       
-      // [수정] 모달 내 인풋 창에 onfocus 와 onblur 이벤트를 추가
+      // [수정] 모달 내 하단에 "현재 창 닫기" 버튼(.btn-close-bottom) 추가
       modal.innerHTML = `
         <div class="modal-content" onclick="event.stopPropagation()">
           <button class="modal-close" onclick="closeModal()">✕</button>
@@ -465,6 +486,8 @@
                 <input type="text" class="comment-input text" id="text-${proj.id}" placeholder="피드백 남기기" required onfocus="handleInputFocus(this)" onblur="handleInputBlur()">
                 <button type="submit" class="btn-submit-comment">등록</button>
               </form>
+              
+              <button class="btn-close-bottom" onclick="closeModal()">현재 창 닫기</button>
             </div>
           </div>
         </div>
@@ -472,21 +495,29 @@
       
       modal.classList.add('active');
       document.body.style.overflow = 'hidden'; 
+
+      // [추가] 모달이 열릴 때 브라우저 히스토리에 가짜 해시 기록을 하나 밀어넣음 (뒤로 가기 방어막)
+      window.history.pushState({ modal: 'open' }, '', '#modal');
     }
 
-    function closeModal() {
+    // [수정] 매개변수 isFromPopState 추가
+    function closeModal(isFromPopState = false) {
       const modal = document.getElementById('project-modal');
       modal.classList.remove('active');
-      // [추가] 모달이 닫힐 때 혹시 남아있을 수 있는 여백 클래스 정리
       const modalContent = modal.querySelector('.modal-content');
       if (modalContent) modalContent.classList.remove('keyboard-open');
       document.body.style.overflow = '';
       fetchData(); 
+
+      // 사용자가 X버튼이나 하단 '현재 창 닫기' 버튼을 눌렀다면 남겨둔 가짜 URL 해시 기록을 지워줌
+      if (!isFromPopState && window.location.hash === '#modal') {
+        window.history.back();
+      }
     }
 
     function setupModalClose() {
       const modal = document.getElementById('project-modal');
-      modal.addEventListener('click', closeModal); 
+      modal.addEventListener('click', () => closeModal()); 
     }
 
     function renderSocials(socials) {
@@ -535,7 +566,7 @@
         if(commentList.innerHTML.includes('첫 피드백을 남겨주세요')) commentList.innerHTML = '';
         commentList.innerHTML += `<div class="comment-item"><span class="comment-user">${name}</span> ${text} <span class="comment-date">지금</span></div>`;
         event.target.reset();
-        handleInputBlur(); // 전송 후 키보드가 내려가므로 여백 정리
+        handleInputBlur(); 
       } catch(e) { console.error(e); showToast('❌ 오류 발생'); } 
       finally { btn.textContent = '등록'; }
     }
