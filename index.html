@@ -2,289 +2,314 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Vibe Coding Lab 🧪</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>VIBE LAB 🧪</title>
   <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
   <style>
-    /* --- 1. 글로벌 & 타이포그래피 --- */
+    /* --- 1. 글로벌 & 코어 테마 (Dark/Neon Futurism) --- */
     :root {
-      --bg-color: #fcfcfd;
-      --bg-glass: rgba(255, 255, 255, 0.7);
-      --bg-card: #ffffff;
-      --text-main: #09090b;
-      --text-muted: #71717a;
-      --border-color: rgba(0, 0, 0, 0.06);
-      --accent: #18181b;
-      --vibe-blue: #0066ff;
-      --shadow-sm: 0 4px 20px -2px rgba(0, 0, 0, 0.03);
-      --shadow-hover: 0 20px 40px -8px rgba(0, 0, 0, 0.08);
-      --radius-xl: 28px;
-      --radius-lg: 20px;
-    }
-
-    body.dark-mode {
-      --bg-color: #050505;
-      --bg-glass: rgba(10, 10, 10, 0.7);
-      --bg-card: #0f0f11;
-      --text-main: #fafafa;
-      --text-muted: #a1a1aa;
+      --bg-base: #050505;
+      --bg-surface: rgba(20, 20, 22, 0.4);
+      --bg-glass: rgba(10, 10, 12, 0.6);
+      --text-main: #ffffff;
+      --text-muted: #888890;
       --border-color: rgba(255, 255, 255, 0.08);
-      --accent: #ffffff;
-      --vibe-blue: #3b82f6;
-      --shadow-sm: 0 4px 20px -2px rgba(0, 0, 0, 0.4);
-      --shadow-hover: 0 20px 40px -8px rgba(255, 255, 255, 0.04);
+      --border-hover: rgba(255, 255, 255, 0.2);
+      --accent: #00e5ff;
+      --accent-glow: rgba(0, 229, 255, 0.4);
+      --vibe-gradient: linear-gradient(135deg, #00e5ff, #bd00ff);
+      --radius-xl: 32px;
+      --radius-lg: 24px;
+      --radius-md: 16px;
+      --spring: cubic-bezier(0.175, 0.885, 0.32, 1.1);
     }
 
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * { margin: 0; padding: 0; box-sizing: border-box; cursor: none; /* 커스텀 커서 사용 */ }
+    
     body {
-      font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background-color: var(--bg-color); color: var(--text-main); line-height: 1.6;
-      -webkit-font-smoothing: antialiased; transition: background-color 0.4s ease, color 0.4s ease;
+      font-family: "Pretendard Variable", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+      background-color: var(--bg-base); 
+      color: var(--text-main); 
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased; 
       overflow-x: hidden;
     }
 
-    /* --- 2. 네비게이션 --- */
-    nav {
-      position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 100;
-      background-color: var(--bg-glass); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
-      border: 1px solid var(--border-color); border-radius: 99px;
-      padding: 0.8rem 2rem; display: flex; gap: 3rem; align-items: center;
-      box-shadow: var(--shadow-sm); transition: all 0.4s ease;
+    /* 필름 노이즈 & 배경 오로라 */
+    .bg-noise {
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+      opacity: 0.04; z-index: -1; pointer-events: none;
     }
-    .nav-logo { font-size: 1.1rem; font-weight: 800; text-decoration: none; color: var(--text-main); letter-spacing: -0.02em; }
-    .nav-links { display: flex; gap: 2rem; align-items: center; }
-    .nav-links a { text-decoration: none; color: var(--text-main); font-size: 0.95rem; font-weight: 600; opacity: 0.6; transition: opacity 0.2s; }
-    .nav-links a:hover { opacity: 1; color: var(--vibe-blue); }
-    .theme-icon { font-size: 1.2rem; cursor: pointer; background: none; border: none; padding: 0; transition: transform 0.3s ease; }
-    .theme-icon:hover { transform: scale(1.15) rotate(10deg); }
-
-    main { max-width: 1100px; margin: 0 auto; padding: 8rem 1.5rem 6rem; }
-    section { margin-bottom: 8rem; }
-    h2 { font-size: 2.5rem; font-weight: 800; margin-bottom: 2.5rem; letter-spacing: -0.03em; text-align: center; }
     
-    /* --- 3. 헤더 (Hero) --- */
-    .hero { min-height: 50vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; margin-bottom: 6rem; }
-    .hero h1 { font-size: clamp(1.8rem, 5vw, 4.2rem); font-weight: 800; letter-spacing: -0.04em; margin-bottom: 1.5rem; line-height: 1.2; word-break: keep-all; }
-    .hero h1 .blue-text { color: var(--vibe-blue); background: linear-gradient(135deg, var(--vibe-blue), #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    .hero p { color: var(--text-muted); font-size: 1.15rem; font-weight: 500; max-width: 600px; word-break: keep-all; margin-bottom: 3rem; }
-    .btn-hero { background-color: var(--text-main); color: var(--bg-color); text-decoration: none; padding: 1.1rem 2.5rem; border-radius: 99px; font-weight: 700; font-size: 1.05rem; transition: transform 0.3s ease, box-shadow 0.3s; }
-    .btn-hero:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
-
-    /* --- 4. 프로젝트 섹션 (Grid) --- */
-    .project-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 2rem; }
-    .project-card { 
-      background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); 
-      overflow: hidden; box-shadow: var(--shadow-sm); transition: transform 0.3s ease, box-shadow 0.3s; cursor: pointer; 
-      display: flex; flex-direction: column;
+    #cursor-glow {
+      position: fixed; width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(189, 0, 255, 0.15) 0%, transparent 60%);
+      border-radius: 50%; transform: translate(-50%, -50%);
+      pointer-events: none; z-index: -2; transition: width 0.3s, height 0.3s;
     }
-    .project-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-hover); }
-    .project-img { width: 100%; height: 220px; object-fit: cover; background-color: var(--border-color); border-bottom: 1px solid var(--border-color); }
-    .project-content { padding: 1.8rem; display: flex; flex-direction: column; flex: 1; }
-    .project-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.8rem; }
-    .project-title { font-size: 1.3rem; font-weight: 800; letter-spacing: -0.02em; }
-    .status-badge { font-size: 0.75rem; font-weight: 700; padding: 0.3rem 0.8rem; border-radius: 99px; background: rgba(37, 99, 235, 0.1); color: var(--vibe-blue); white-space: nowrap; }
-    .project-desc-short { color: var(--text-muted); font-size: 0.95rem; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 1.5rem; }
-    .project-meta { margin-top: auto; display: flex; gap: 1rem; font-size: 0.85rem; font-weight: 600; color: var(--text-muted); }
+    
+    /* 커스텀 마우스 포인터 */
+    .custom-cursor {
+      position: fixed; top: 0; left: 0; width: 12px; height: 12px;
+      background: var(--text-main); border-radius: 50%;
+      transform: translate(-50%, -50%); pointer-events: none; z-index: 9999;
+      mix-blend-mode: difference; transition: width 0.2s, height 0.2s;
+    }
+    body:hover .custom-cursor { width: 12px; height: 12px; }
 
-    /* --- 5. 에코시스템 섹션 (Bento) --- */
-    .bento-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+    /* --- 2. 네비게이션 (Minimal Pill) --- */
+    nav {
+      position: fixed; top: 32px; left: 50%; transform: translateX(-50%); z-index: 100;
+      background: var(--bg-glass); backdrop-filter: blur(24px); border: 1px solid var(--border-color);
+      border-radius: 999px; padding: 0.8rem 2.5rem; display: flex; gap: 4rem; align-items: center;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    }
+    .nav-logo { font-size: 1.2rem; font-weight: 900; color: var(--text-main); text-decoration: none; letter-spacing: 0.05em; text-transform: uppercase; }
+    .nav-links { display: flex; gap: 2.5rem; align-items: center; }
+    .nav-links a { text-decoration: none; color: var(--text-muted); font-size: 0.9rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; transition: 0.3s; }
+    .nav-links a:hover { color: var(--text-main); text-shadow: 0 0 10px rgba(255,255,255,0.5); }
+
+    main { max-width: 1200px; margin: 0 auto; padding: 12rem 1.5rem 6rem; position: relative; }
+    section { margin-bottom: 12rem; }
+    h2 { font-size: 3.5rem; font-weight: 900; margin-bottom: 4rem; letter-spacing: -0.04em; color: var(--text-main); text-transform: uppercase; }
+
+    /* --- 3. 헤더 (Kinetic Hero) --- */
+    .hero { min-height: 60vh; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; position: relative; }
+    .hero-badge { display: inline-block; padding: 0.5rem 1rem; background: rgba(255,255,255,0.05); border: 1px solid var(--border-color); border-radius: 999px; font-size: 0.85rem; font-weight: 700; letter-spacing: 0.1em; margin-bottom: 2rem; color: var(--accent); text-transform: uppercase; }
+    .hero h1 { font-size: clamp(3rem, 8vw, 6.5rem); font-weight: 900; letter-spacing: -0.04em; line-height: 1; margin-bottom: 2rem; position: relative; }
+    .hero h1 .vibe-mask {
+      background: url('https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=2070&auto=format&fit=crop') center/cover;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; 
+      filter: drop-shadow(0 0 20px rgba(0,229,255,0.3));
+    }
+    .hero p { color: var(--text-muted); font-size: 1.4rem; font-weight: 500; max-width: 600px; line-height: 1.6; margin-bottom: 4rem; }
+    .btn-glow {
+      position: relative; padding: 1.2rem 3rem; background: transparent; color: var(--text-main);
+      font-size: 1.1rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em;
+      border: 1px solid var(--border-color); border-radius: 999px; text-decoration: none;
+      overflow: hidden; transition: 0.4s ease; display: inline-flex;
+    }
+    .btn-glow::before {
+      content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+      background: var(--vibe-gradient); transition: 0.4s ease; z-index: -1;
+    }
+    .btn-glow:hover::before { left: 0; }
+    .btn-glow:hover { border-color: transparent; box-shadow: 0 0 30px var(--accent-glow); transform: scale(1.05); }
+
+    /* --- 4. 인터랙티브 카드 그리드 (Linear/Vercel Style Hover) --- */
+    .project-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 2rem; }
+    .card-wrapper {
+      position: relative; border-radius: var(--radius-lg); background: rgba(255,255,255,0.02);
+      padding: 1px; /* 얇은 테두리 효과를 위한 패딩 */
+      overflow: hidden; cursor: pointer;
+    }
+    /* 마우스 움직임에 따른 테두리 빛 효과 */
+    .card-wrapper::before {
+      content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      background: radial-gradient(800px circle at var(--mouse-x, 0) var(--mouse-y, 0), rgba(255,255,255,0.3), transparent 40%);
+      z-index: 0; opacity: 0; transition: opacity 0.3s;
+    }
+    .card-wrapper:hover::before { opacity: 1; }
+    
+    .project-card {
+      position: relative; background: var(--bg-surface); border-radius: calc(var(--radius-lg) - 1px);
+      height: 100%; z-index: 1; display: flex; flex-direction: column; overflow: hidden;
+      backdrop-filter: blur(10px); transition: transform 0.4s var(--spring);
+    }
+    .card-wrapper:hover .project-card { transform: scale(0.98); } /* 누르는 듯한 햅틱 효과 */
+    
+    /* 마우스 움직임에 따른 내부 반사광 */
+    .project-card::after {
+      content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      background: radial-gradient(600px circle at var(--mouse-x, 0) var(--mouse-y, 0), rgba(255,255,255,0.06), transparent 40%);
+      z-index: 2; opacity: 0; pointer-events: none; transition: opacity 0.3s;
+    }
+    .card-wrapper:hover .project-card::after { opacity: 1; }
+
+    .project-img-wrapper { height: 260px; overflow: hidden; background: #111; position: relative; }
+    .project-img { width: 100%; height: 100%; object-fit: cover; opacity: 0.7; transition: 0.5s; filter: grayscale(50%); }
+    .card-wrapper:hover .project-img { opacity: 1; filter: grayscale(0%); transform: scale(1.05); }
+    .project-content { padding: 2.5rem; display: flex; flex-direction: column; flex: 1; position: relative; z-index: 3; }
+    .project-title { font-size: 1.6rem; font-weight: 800; margin-bottom: 0.5rem; letter-spacing: -0.02em; }
+    .status-badge { display: inline-block; font-size: 0.75rem; font-weight: 800; padding: 0.3rem 0.8rem; border-radius: 4px; background: rgba(255,255,255,0.1); color: var(--text-main); margin-bottom: 1.5rem; text-transform: uppercase; }
+    .project-desc-short { color: var(--text-muted); font-size: 1.05rem; line-height: 1.6; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 2.5rem; }
+    .project-meta { margin-top: auto; display: flex; gap: 1.5rem; font-size: 0.95rem; font-weight: 700; font-family: monospace; }
+
+    /* --- 5. 에코시스템 (Bento Grid) --- */
+    .bento-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1px; background: var(--border-color); border: 1px solid var(--border-color); border-radius: var(--radius-xl); overflow: hidden; }
     .social-card {
-      position: relative; overflow: hidden; border-radius: var(--radius-lg);
-      background-color: var(--bg-card); border: 1px solid var(--border-color);
-      padding: 2.5rem 2rem; display: flex; flex-direction: column; gap: 1rem;
-      text-decoration: none; color: var(--text-main);
-      box-shadow: var(--shadow-sm); transition: transform 0.3s ease, box-shadow 0.3s ease;
+      background: var(--bg-surface); padding: 4rem 3rem; display: flex; flex-direction: column; gap: 1.5rem;
+      text-decoration: none; color: var(--text-main); position: relative; overflow: hidden;
+      transition: background 0.3s;
     }
-    .social-card:hover { transform: translateY(-4px) scale(1.01); box-shadow: var(--shadow-hover); }
-    .social-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: var(--brand-color, var(--text-main)); transition: height 0.3s ease, opacity 0.3s ease; opacity: 0.8; }
-    .social-card:hover::before { height: 100%; opacity: 0.03; }
-    [data-platform="youtube"] { --brand-color: #ff0000; }
-    [data-platform="instagram"] { --brand-color: #e1306c; }
-    [data-platform="twitter"], [data-platform="x"] { --brand-color: var(--text-main); }
-    [data-platform="linkedin"] { --brand-color: #0a66c2; }
-    [data-platform="github"] { --brand-color: #333333; }
-    .social-platform { font-size: 0.85rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: var(--brand-color, var(--text-muted)); }
-    .social-handle { font-size: 1.6rem; font-weight: 800; letter-spacing: -0.02em; }
-    .social-stats { display: inline-block; padding: 0.3rem 0.8rem; border-radius: 99px; background: var(--bg-color); border: 1px solid var(--border-color); font-size: 0.8rem; font-weight: 700; width: max-content; }
-    .social-desc { font-size: 0.95rem; color: var(--text-muted); line-height: 1.5; margin-top: auto; }
+    .social-card:hover { background: rgba(255,255,255,0.05); }
+    .social-platform { font-size: 0.9rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.2em; color: var(--text-muted); }
+    .social-handle { font-size: 2.2rem; font-weight: 900; letter-spacing: -0.03em; }
+    .social-desc { font-size: 1.1rem; color: var(--text-muted); }
 
-    /* --- 6. 모달 (프로젝트 상세) --- */
+    /* --- 6. 연락처 (Terminal Style) --- */
+    .contact-container {
+      background: #000; border: 1px solid var(--border-color); border-radius: var(--radius-xl);
+      padding: 5rem; display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; position: relative;
+    }
+    .contact-info-text { font-size: 4rem; font-weight: 900; line-height: 1; margin-bottom: 2rem; text-transform: uppercase; }
+    .contact-info-text span { color: var(--accent); }
+    .form-input { 
+      width: 100%; padding: 1.5rem 0; border: none; border-bottom: 1px solid var(--border-color); 
+      background: transparent; color: var(--text-main); font-size: 1.2rem; font-family: monospace;
+      outline: none; transition: 0.3s; 
+    }
+    .form-input:focus { border-color: var(--accent); box-shadow: 0 10px 20px -10px var(--accent-glow); }
+    .form-input::placeholder { color: #555; }
+    .btn-submit { 
+      background: var(--text-main); color: #000; border: none; padding: 1.5rem; width: 100%;
+      border-radius: 8px; font-size: 1.2rem; font-weight: 900; text-transform: uppercase; 
+      cursor: none; margin-top: 2rem; transition: 0.3s;
+    }
+    .btn-submit:hover { background: var(--accent); transform: translateY(-4px); box-shadow: 0 10px 20px var(--accent-glow); }
+
+    /* --- 7. 모달 (Immersive Fullscreen Overlay) --- */
     .modal-overlay {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-      z-index: 1000; display: flex; justify-content: center; align-items: center;
-      opacity: 0; pointer-events: none; transition: opacity 0.3s ease; padding: 1.5rem;
+      position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      z-index: 1000; display: flex; justify-content: flex-end; /* 오른쪽에서 슬라이드 */
+      opacity: 0; pointer-events: none; transition: opacity 0.4s ease;
     }
     .modal-overlay.active { opacity: 1; pointer-events: auto; }
     .modal-content {
-      background: var(--bg-card); width: 100%; max-width: 750px; max-height: 90vh;
-      border-radius: var(--radius-xl); overflow-y: auto; position: relative;
-      transform: translateY(30px) scale(0.98); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3); border: 1px solid var(--border-color);
+      background: var(--bg-base); width: 100%; max-width: 600px; height: 100vh;
+      overflow-y: auto; position: relative; border-left: 1px solid var(--border-color);
+      transform: translateX(100%); transition: transform 0.6s var(--spring);
       display: flex; flex-direction: column;
     }
-    .modal-overlay.active .modal-content { transform: translateY(0) scale(1); }
-    .modal-close {
-      position: absolute; top: 1.5rem; right: 1.5rem;
-      background: var(--bg-glass); border: 1px solid var(--border-color); width: 36px; height: 36px;
-      border-radius: 50%; cursor: pointer; display: flex; justify-content: center; align-items: center;
-      font-size: 1.2rem; color: var(--text-main); z-index: 10; backdrop-filter: blur(4px); transition: background 0.2s;
-    }
-    .modal-close:hover { background: var(--border-color); }
-    .modal-img { width: 100%; height: 320px; object-fit: cover; background: var(--border-color); border-bottom: 1px solid var(--border-color); }
+    .modal-overlay.active .modal-content { transform: translateX(0); }
+    
+    .modal-close-area { position: absolute; top: 0; left: 0; width: calc(100% - 600px); height: 100%; cursor: none; }
+    
+    .modal-header { position: sticky; top: 0; display: flex; justify-content: space-between; align-items: center; padding: 2rem; background: rgba(5,5,5,0.8); backdrop-filter: blur(10px); z-index: 10; border-bottom: 1px solid var(--border-color); }
+    .modal-title-sm { font-size: 1.2rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; }
+    .modal-close { background: transparent; border: 1px solid var(--border-color); width: 44px; height: 44px; border-radius: 50%; color: var(--text-main); display: flex; justify-content: center; align-items: center; cursor: none; transition: 0.3s; }
+    .modal-close:hover { background: var(--text-main); color: #000; transform: rotate(90deg); }
+    
+    .modal-img { width: 100%; height: 400px; object-fit: cover; }
     .modal-body { padding: 3rem; }
-    .modal-title-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.2rem; }
-    .modal-title { font-size: 1.8rem; font-weight: 800; letter-spacing: -0.02em; }
-    .modal-desc { font-size: 1rem; color: var(--text-muted); margin-bottom: 2.5rem; line-height: 1.7; word-break: keep-all; font-weight: 400; }
+    .modal-title { font-size: 3rem; font-weight: 900; line-height: 1.1; margin-bottom: 1.5rem; }
+    .modal-desc { font-size: 1.2rem; color: var(--text-muted); margin-bottom: 3rem; line-height: 1.8; }
     
-    .interaction-area { border-top: 1px solid var(--border-color); padding-top: 2rem; }
-    .action-row { display: flex; gap: 0.8rem; align-items: center; margin-bottom: 2rem; }
-    .btn-action { background: var(--bg-color); color: var(--text-main); border: 1px solid var(--border-color); padding: 0.8rem 1.5rem; border-radius: 99px; font-weight: 700; font-size: 0.95rem; cursor: pointer; transition: all 0.2s; white-space: nowrap; display: flex; justify-content: center; align-items: center; }
-    .btn-action:hover { border-color: var(--text-main); }
-    .btn-visit { background: var(--vibe-blue); color: #fff; text-decoration: none; padding: 0.8rem 1.5rem; border-radius: 99px; font-weight: 700; font-size: 0.95rem; transition: transform 0.2s, box-shadow 0.2s; display: flex; justify-content: center; align-items: center; gap: 0.3rem; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2); white-space: nowrap; }
-    .btn-visit:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3); color: #fff; }
+    .action-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 3rem; }
+    .btn-action, .btn-visit { background: transparent; color: var(--text-main); border: 1px solid var(--border-color); padding: 1.2rem; border-radius: 8px; font-weight: 800; text-align: center; text-decoration: none; text-transform: uppercase; cursor: none; transition: 0.3s; }
+    .btn-action:hover { border-color: var(--accent); color: var(--accent); }
+    .btn-visit { background: var(--text-main); color: #000; }
+    .btn-visit:hover { background: var(--accent); color: #000; border-color: var(--accent); box-shadow: 0 0 20px var(--accent-glow); }
 
-    .comment-list { background: var(--bg-color); border-radius: 16px; padding: 1.5rem; margin-bottom: 1.5rem; max-height: 250px; overflow-y: auto; border: 1px solid var(--border-color); }
-    .comment-item { margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px dashed var(--border-color); font-size: 0.95rem; line-height: 1.5; }
-    .comment-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
-    .comment-user { font-weight: 800; margin-right: 0.5rem; color: var(--text-main); }
-    .comment-date { font-size: 0.8rem; color: var(--text-muted); }
+    .comment-section-title { font-size: 1.5rem; font-weight: 900; margin-bottom: 1.5rem; border-top: 1px solid var(--border-color); padding-top: 3rem; }
+    .comment-list { display: flex; flex-direction: column; gap: 1.5rem; margin-bottom: 2rem; }
+    .comment-item { padding: 1.5rem; background: rgba(255,255,255,0.03); border-radius: 12px; border: 1px solid var(--border-color); }
+    .comment-user { font-weight: 900; color: var(--accent); font-family: monospace; font-size: 1.1rem; margin-bottom: 0.5rem; display: block; }
+    .comment-text { color: var(--text-main); font-size: 1.05rem; }
     
-    .comment-form { display: flex; gap: 0.5rem; background: var(--bg-color); padding: 0.4rem; border-radius: 99px; border: 1px solid var(--border-color); transition: all 0.3s ease; }
-    .comment-input { flex: 1; padding: 0.8rem 1rem; border: none; background: transparent; color: var(--text-main); font-family: inherit; font-size: 0.95rem; outline: none; }
-    .comment-input.author { flex: 0.3; border-right: 1px solid var(--border-color); border-radius: 0; }
-    .btn-submit-comment { background: var(--text-main); color: var(--bg-color); border: none; padding: 0 1.5rem; border-radius: 99px; font-weight: 700; cursor: pointer; transition: transform 0.2s; white-space: nowrap; flex-shrink: 0; font-family: inherit; }
-    .btn-submit-comment:hover { transform: scale(1.05); }
+    .comment-form { display: flex; flex-direction: column; gap: 1rem; }
+    .comment-input { padding: 1.2rem; border: 1px solid var(--border-color); background: rgba(0,0,0,0.5); color: #fff; border-radius: 8px; font-family: inherit; font-size: 1rem; outline: none; }
+    .comment-input:focus { border-color: var(--accent); }
+    .btn-submit-comment { background: var(--text-main); color: #000; border: none; padding: 1.2rem; border-radius: 8px; font-weight: 900; cursor: none; transition: 0.3s; }
+    .btn-submit-comment:hover { background: var(--accent); }
 
-    /* [추가] 모달 하단 닫기 버튼 스타일 */
-    .btn-close-bottom {
-      width: 100%;
-      background: var(--bg-color);
-      color: var(--text-muted);
-      border: 1px solid var(--border-color);
-      padding: 1rem;
-      border-radius: 12px;
-      font-weight: 700;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: all 0.2s;
-      margin-top: 1rem;
-    }
-    .btn-close-bottom:hover {
-      background: var(--border-color);
-      color: var(--text-main);
-    }
-    
-    /* --- 7. 연락처 섹션 --- */
-    .contact-container { background: var(--bg-card); border-radius: var(--radius-xl); padding: 4rem; border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
-    .contact-form { display: flex; flex-direction: column; gap: 1rem; }
-    .form-input { width: 100%; padding: 1.2rem; border: none; border-bottom: 2px solid var(--border-color); background: transparent; color: var(--text-main); font-family: inherit; font-size: 1rem; outline: none; transition: border-color 0.3s; }
-    .form-input:focus { border-color: var(--vibe-blue); }
-    .form-input::placeholder { color: var(--text-muted); }
-    textarea.form-input { resize: vertical; min-height: 100px; }
-    .btn-black { background: var(--text-main); color: var(--bg-color); border: none; padding: 1.2rem; border-radius: 16px; font-size: 1.05rem; font-weight: 800; cursor: pointer; transition: transform 0.3s; margin-top: 0.5rem; font-family: inherit; }
-    .btn-black:hover { transform: translateY(-3px); }
-    .contact-info-text { font-size: 2rem; font-weight: 800; color: var(--text-main); margin-bottom: 1rem; line-height: 1.2; letter-spacing: -0.03em;}
-    .contact-sub { font-size: 1rem; color: var(--text-muted); }
+    /* --- 8. 기타 --- */
+    .toast { position: fixed; bottom: 40px; right: 40px; background: var(--vibe-gradient); color: #fff; padding: 1.2rem 2.5rem; border-radius: 8px; font-weight: 900; font-size: 1.1rem; box-shadow: 0 10px 30px rgba(0,229,255,0.3); transform: translateY(100px); opacity: 0; transition: 0.5s var(--spring); z-index: 9999; }
+    .toast.show { transform: translateY(0); opacity: 1; }
 
-    .loader { text-align: center; padding: 4rem; color: var(--text-muted); font-weight: 600; font-size: 1.1rem; grid-column: 1 / -1; }
-
-    /* --- 8. 토스트 팝업 --- */
-    .toast { position: fixed; top: -100px; left: 50%; transform: translateX(-50%) scale(0.9); background-color: var(--text-main); color: var(--bg-color); padding: 1rem 2rem; border-radius: 99px; font-weight: 700; font-size: 0.95rem; box-shadow: 0 20px 40px rgba(0,0,0,0.2); backdrop-filter: blur(10px); transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); opacity: 0; z-index: 9999; pointer-events: none; white-space: nowrap; }
-    .toast.show { top: 40px; transform: translateX(-50%) scale(1); opacity: 1; }
-
-    /* ★ 모바일 최적화 수정 사항 (키보드 대응 포함) */
-    @media (max-width: 768px) { 
-      nav { width: 90%; justify-content: space-between; gap: 1rem; padding: 0.8rem 1.5rem; } 
-      .nav-links a { display: none; } 
-      .hero p span { display: block; }
-      .contact-container { grid-template-columns: 1fr; padding: 2.5rem 1.5rem; gap: 3rem; }
+    /* ★ 극강의 모바일 텐션 ★ */
+    @media (max-width: 768px) {
+      * { cursor: auto; } .custom-cursor, #cursor-glow, .modal-close-area { display: none; }
+      nav { width: calc(100% - 2rem); padding: 0.8rem 1.5rem; gap: 1rem; justify-content: space-between; }
+      .nav-links a { display: none; }
       
-      .modal-overlay { align-items: flex-end; padding: 0; }
+      main { padding: 8rem 1rem 4rem; }
+      h2 { font-size: 2.5rem; margin-bottom: 2rem; }
+      .hero h1 { font-size: 3.5rem; line-height: 1.1; }
+      .hero p { font-size: 1.1rem; }
       
-      .modal-content { 
-        border-radius: var(--radius-xl) var(--radius-xl) 0 0; 
-        max-height: 85dvh; 
-        transform: translateY(100%); 
-        border-bottom: none; 
-        transition: padding-bottom 0.3s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-      }
+      .contact-container { grid-template-columns: 1fr; padding: 3rem 1.5rem; }
+      .contact-info-text { font-size: 2.5rem; }
+      
+      /* 모바일 바텀 시트 (풀화면) */
+      .modal-overlay { justify-content: flex-end; align-items: flex-end; }
+      .modal-content { max-width: 100%; height: 90dvh; border-radius: var(--radius-xl) var(--radius-xl) 0 0; transform: translateY(100%); border-left: none; border-top: 1px solid var(--border-color); }
       .modal-overlay.active .modal-content { transform: translateY(0); }
-      
-      .modal-content.keyboard-open {
-        padding-bottom: 50vh !important;
-      }
-
-      .modal-img { height: 220px; }
-      .modal-body { padding: 1.8rem 1.5rem; }
-      .modal-title { font-size: 1.5rem; }
-      .modal-desc { font-size: 0.9rem; margin-bottom: 2rem; }
-      .modal-close { top: 1rem; right: 1rem; background: var(--bg-color); box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-      .action-row { display: flex; width: 100%; gap: 0.5rem; }
-      .btn-action, .btn-visit { flex: 1; padding: 0.9rem 0; font-size: 0.9rem; }
-      
-      .comment-form { 
-        flex-direction: column; border-radius: 16px; padding: 0.8rem; 
-      } 
-      .comment-input.author { border-right: none; border-bottom: 1px solid var(--border-color); } 
-      .btn-submit-comment { padding: 1rem; border-radius: 12px; margin-top: 0.5rem; width: 100%; }
+      .modal-header { padding: 1.5rem; }
+      .modal-img { height: 250px; }
+      .modal-body { padding: 1.5rem; }
+      .modal-title { font-size: 2rem; }
+      .action-row { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
+
+  <div class="bg-noise"></div>
+  <div id="cursor-glow"></div>
+  <div class="custom-cursor"></div>
 
   <nav>
     <a href="#" class="nav-logo">Vibe Lab 🧪</a>
     <div class="nav-links">
       <a href="#projects-section">Projects</a>
       <a href="#socials-section">Ecosystem</a>
-      <a href="#contact-section">Contact</a>
+      <a href="#contact-section">Terminal</a>
     </div>
-    <button class="theme-icon" id="theme-toggle" aria-label="Toggle Theme">💡</button>
   </nav>
 
   <main>
     <section class="hero">
-      <h1>개발자 아니어도 괜찮아!<br><span class="blue-text">AI 바이브 코딩 랩</span> 🧪</h1>
-      <p>
-        <span>아이디어를 현실로!</span> 
-        <span>AI와 함께 만드는 1인 개발 생태계</span>
-      </p>
-      <a href="#projects-section" class="btn-hero">프로젝트 둘러보기 ↓</a>
+      <div class="hero-badge">System Online</div>
+      <h1>
+        <span class="vibe-mask">LIMITLESS</span><br>
+        CREATION.
+      </h1>
+      <p>코드 한 줄 몰라도 괜찮습니다. AI와 당신의 감각(Vibe)만 있다면 무엇이든 만들어내는 1인 개발 생태계에 접속하세요.</p>
+      <a href="#projects-section" class="btn-glow">Explore Lab</a>
     </section>
 
     <section id="projects-section">
-      <h2>Projects</h2>
+      <h2>Deployments</h2>
       <div id="project-container" class="project-grid">
-        <div class="loader">Loading...</div>
+        <div style="color:var(--text-muted); font-family:monospace; padding: 2rem;">Initializing data stream...</div>
       </div>
     </section>
 
     <section id="socials-section">
-      <h2>Ecosystem</h2>
+      <h2>Network</h2>
       <div id="socials-container" class="bento-grid">
-        <div class="loader">Loading...</div>
-      </div>
+        </div>
     </section>
 
     <section id="contact-section">
-      <h2>Collaborate</h2>
       <div class="contact-container">
-        <div class="contact-text-area">
-          <p class="contact-info-text">Let's Build<br>Together.</p>
-          <p class="contact-sub">새로운 아이디어나 커피챗, 언제든 환영합니다.</p>
+        <div>
+          <h2 class="contact-info-text">INITIATE<br><span>PROTOCOL.</span></h2>
+          <p style="color:var(--text-muted); font-family:monospace; font-size: 1.1rem;">새로운 아이디어나 협업 제안을 터미널에 입력하세요.</p>
         </div>
-        <form id="contact-form" class="contact-form">
-          <input type="text" id="c-name" class="form-input" placeholder="Name" required>
-          <input type="email" id="c-email" class="form-input" placeholder="Email" required>
-          <textarea id="c-message" class="form-input" placeholder="Message" required></textarea>
-          <button type="submit" class="btn-black" id="btn-contact-submit">Send Message</button>
+        <form id="contact-form">
+          <input type="text" id="c-name" class="form-input" placeholder="> USER_NAME" required>
+          <input type="email" id="c-email" class="form-input" placeholder="> COMM_CHANNEL (Email)" required>
+          <input type="text" id="c-message" class="form-input" placeholder="> EXECUTE_COMMAND (Message)" required>
+          <button type="submit" class="btn-submit" id="btn-contact-submit">Transmit</button>
         </form>
       </div>
     </section>
   </main>
 
-  <div id="project-modal" class="modal-overlay"></div>
+  <div id="project-modal" class="modal-overlay">
+    <div class="modal-close-area" onclick="closeModal()"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <span class="modal-title-sm">Project Details</span>
+        <button class="modal-close" onclick="closeModal()">✕</button>
+      </div>
+      <div id="modal-inner-content"></div>
+    </div>
+  </div>
+
   <div id="custom-toast" class="toast"></div>
 
   <script>
@@ -292,72 +317,50 @@
     let globalData = { projects: [], comments: [], socials: [] };
 
     document.addEventListener('DOMContentLoaded', () => {
-      initThemeToggle();
+      initCustomCursor();
       fetchData();
       setupContactForm();
-      setupModalClose();
     });
 
-    // [추가] 사용자가 브라우저나 기기의 물리적 '뒤로 가기' 버튼을 눌렀을 때 감지하는 로직
-    window.addEventListener('popstate', function(event) {
-      const modal = document.getElementById('project-modal');
-      // 모달이 띄워져 있는 상태에서 뒤로 가기를 눌렀다면 페이지 이탈을 막고 모달만 닫음
-      if (modal.classList.contains('active')) {
-        closeModal(true); // true = 뒤로 가기 버튼에 의해 닫힘을 의미
-      }
-    });
-
-    function getSafeImageUrl(url) {
-      if (!url) return '';
-      const strUrl = String(url).trim();
-      let fileId = '';
-
-      if (strUrl.includes('/file/d/')) {
-        const match = strUrl.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
-        if (match) fileId = match[1];
-      } else if (strUrl.includes('id=')) {
-        const match = strUrl.match(/[?&]id=([a-zA-Z0-9_-]+)/);
-        if (match) fileId = match[1];
-      }
-
-      if (fileId) {
-        return `https://drive.google.com/thumbnail?id=${fileId}&sz=w800`;
-      }
-      return strUrl;
-    }
-
-    function handleInputFocus(element) {
-      if (window.innerWidth <= 768) {
-        const modalContent = document.querySelector('.modal-content');
-        modalContent.classList.add('keyboard-open'); 
-
-        setTimeout(() => {
-          element.scrollIntoView({ behavior: "smooth", block: "center" });
-        }, 400);
-      }
-    }
-
-    function handleInputBlur() {
-      if (window.innerWidth <= 768) {
-        const modalContent = document.querySelector('.modal-content');
-        setTimeout(() => {
-          if (document.activeElement.tagName !== 'INPUT') {
-            modalContent.classList.remove('keyboard-open');
-          }
-        }, 100);
-      }
-    }
-
-    function initThemeToggle() {
-      const themeToggleBtn = document.getElementById('theme-toggle');
-      if(localStorage.getItem('theme') === 'dark') document.body.classList.add('dark-mode');
+    // --- 1. 커스텀 커서 & 배경 글로우 로직 ---
+    function initCustomCursor() {
+      if(window.innerWidth <= 768) return; // 모바일 제외
+      const cursor = document.querySelector('.custom-cursor');
+      const glow = document.getElementById('cursor-glow');
       
-      themeToggleBtn.addEventListener('click', () => {
-        document.body.classList.toggle('dark-mode');
-        const isDark = document.body.classList.contains('dark-mode');
-        localStorage.setItem('theme', isDark ? 'dark' : 'light');
-        showToast(isDark ? '🌙 다크 모드 ON' : '☀️ 라이트 모드 ON');
+      document.addEventListener('mousemove', (e) => {
+        cursor.style.left = e.clientX + 'px';
+        cursor.style.top = e.clientY + 'px';
+        
+        // 배경 글로우는 약간의 딜레이를 주어 부드럽게 따라오게 함 (퍼포먼스 고려해 직접 수정)
+        glow.animate({
+          left: `${e.clientX}px`,
+          top: `${e.clientY + window.scrollY}px`
+        }, { duration: 500, fill: "forwards" });
       });
+
+      // Hover 효과가 필요한 요소들에 커서 변형
+      const interactives = document.querySelectorAll('a, button, input, .card-wrapper');
+      interactives.forEach(el => {
+        el.addEventListener('mouseenter', () => { cursor.style.transform = 'translate(-50%, -50%) scale(4)'; cursor.style.background = 'transparent'; cursor.style.border = '1px solid white'; });
+        el.addEventListener('mouseleave', () => { cursor.style.transform = 'translate(-50%, -50%) scale(1)'; cursor.style.background = 'var(--text-main)'; cursor.style.border = 'none'; });
+      });
+    }
+
+    // --- 2. 카드 호버 시 조명 위치 계산 (Linear Style) ---
+    function attachCardHoverEffects() {
+      const cards = document.querySelectorAll('.card-wrapper');
+      cards.forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+          const rect = card.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          card.style.setProperty('--mouse-x', `${x}px`);
+          card.style.setProperty('--mouse-y', `${y}px`);
+        });
+      });
+      // 동적으로 생성된 카드들에 커서 이벤트 다시 바인딩
+      initCustomCursor();
     }
 
     let toastTimeout;
@@ -369,77 +372,69 @@
       toastTimeout = setTimeout(() => toast.classList.remove('show'), 3000); 
     }
 
+    function getSafeImageUrl(url) {
+      if (!url) return '';
+      const strUrl = String(url).trim();
+      let fileId = '';
+      if (strUrl.includes('/file/d/')) { const match = strUrl.match(/\/file\/d\/([a-zA-Z0-9_-]+)/); if (match) fileId = match[1]; } 
+      else if (strUrl.includes('id=')) { const match = strUrl.match(/[?&]id=([a-zA-Z0-9_-]+)/); if (match) fileId = match[1]; }
+      if (fileId) return `https://drive.google.com/thumbnail?id=${fileId}&sz=w800`;
+      return strUrl;
+    }
+
     async function fetchData() {
       const projContainer = document.getElementById('project-container');
       const socialContainer = document.getElementById('socials-container');
       
       if(GAS_WEB_APP_URL.includes('YOUR_SCRIPT_ID')) {
-        projContainer.innerHTML = `<div class="loader" style="color:#ef4444;">URL 세팅 필요</div>`;
-        socialContainer.innerHTML = '';
+        projContainer.innerHTML = `<div style="color:#ff003c; font-family:monospace;">ERR: ENDPOINT_NOT_CONFIGURED</div>`;
         return;
-      }
-
-      const cachedData = localStorage.getItem('vibe_lab_data');
-      if (cachedData) {
-        try {
-          const parsedCache = JSON.parse(cachedData);
-          globalData = parsedCache;
-          renderProjects(parsedCache.projects, parsedCache.comments);
-          renderSocials(parsedCache.socials);
-        } catch(e) { console.error("Cache parsing error", e); }
       }
 
       try {
         const response = await fetch(GAS_WEB_APP_URL);
         const data = await response.json();
-        
-        if (JSON.stringify(globalData) !== JSON.stringify(data)) {
-          globalData = data; 
-          localStorage.setItem('vibe_lab_data', JSON.stringify(data));
-          renderProjects(data.projects, data.comments);
-          renderSocials(data.socials);
-        }
+        globalData = data; 
+        renderProjects(data.projects, data.comments);
+        renderSocials(data.socials);
       } catch (error) {
-        if (!cachedData) { 
-          projContainer.innerHTML = `<div class="loader">데이터 연결 실패</div>`;
-          socialContainer.innerHTML = '';
-        }
+        projContainer.innerHTML = `<div style="color:#ff003c; font-family:monospace;">ERR: CONNECTION_TIMEOUT</div>`;
       }
     }
 
     function renderProjects(projects, comments) {
       const container = document.getElementById('project-container');
       container.innerHTML = '';
-
-      if(!projects || projects.length === 0) {
-        container.innerHTML = `<div class="loader">No Projects</div>`;
-        return;
-      }
+      if(!projects || projects.length === 0) return;
 
       projects.forEach(proj => {
-        const card = document.createElement('div');
-        card.className = 'project-card';
-        card.onclick = () => openModal(proj.id); 
+        const cardWrap = document.createElement('div');
+        cardWrap.className = 'card-wrapper';
+        cardWrap.onclick = () => openModal(proj.id); 
 
         const likesCount = proj.likes || 0;
         const commentsCount = comments.filter(c => c.projectId == proj.id).length;
         const safeImgUrl = getSafeImageUrl(proj.image);
 
-        card.innerHTML = `
-          ${safeImgUrl ? `<img src="${safeImgUrl}" class="project-img" alt="${proj.title}">` : '<div class="project-img" style="display:flex;align-items:center;justify-content:center;color:#9ca3af; font-weight:600;">No Image</div>'}
-          <div class="project-content">
-            <div class="project-header">
-              <h3 class="project-title">${proj.title}</h3>
+        cardWrap.innerHTML = `
+          <div class="project-card">
+            <div class="project-img-wrapper">
+              ${safeImgUrl ? `<img src="${safeImgUrl}" class="project-img" alt="${proj.title}" loading="lazy">` : '<div style="display:flex;height:100%;align-items:center;justify-content:center;color:#555;font-family:monospace;">NO_IMAGE_DATA</div>'}
             </div>
-            <p class="project-desc-short">${proj.desc}</p>
-            <div class="project-meta">
-              <span>❤️ ${likesCount}</span>
-              <span>💬 ${commentsCount}</span>
+            <div class="project-content">
+              <span class="status-badge">${proj.status || 'DEPLOYED'}</span>
+              <h3 class="project-title">${proj.title}</h3>
+              <p class="project-desc-short">${proj.desc}</p>
+              <div class="project-meta">
+                <span>LIKES [${likesCount}]</span>
+                <span>COMM [${commentsCount}]</span>
+              </div>
             </div>
           </div>
         `;
-        container.appendChild(card);
+        container.appendChild(cardWrap);
       });
+      attachCardHoverEffects();
     }
 
     function openModal(projectId) {
@@ -449,92 +444,65 @@
       const projComments = globalData.comments.filter(c => c.projectId == proj.id);
       const commentsHTML = projComments.map(c => 
         `<div class="comment-item">
-          <span class="comment-user">${c.name}</span> ${c.text} 
-          <span class="comment-date">${c.date ? new Date(c.date).toLocaleDateString() : ''}</span>
+          <span class="comment-user">> ${c.name}_</span>
+          <div class="comment-text">${c.text}</div>
         </div>`
       ).join('');
 
       const rawLink = String(proj.link || '').trim();
       const hasValidLink = rawLink.startsWith('http://') || rawLink.startsWith('https://');
-      const visitCtaHTML = hasValidLink ? `<a href="${rawLink}" target="_blank" class="btn-visit">서비스 둘러보기 ↗</a>` : '';
+      const visitCtaHTML = hasValidLink ? `<a href="${rawLink}" target="_blank" class="btn-visit">Launch App</a>` : '';
       const safeImgUrl = getSafeImageUrl(proj.image);
 
-      const modal = document.getElementById('project-modal');
+      const modalInner = document.getElementById('modal-inner-content');
       
-      // [수정] 모달 내 하단에 "현재 창 닫기" 버튼(.btn-close-bottom) 추가
-      modal.innerHTML = `
-        <div class="modal-content" onclick="event.stopPropagation()">
-          <button class="modal-close" onclick="closeModal()">✕</button>
-          ${safeImgUrl ? `<img src="${safeImgUrl}" class="modal-img" alt="${proj.title}">` : ''}
-          <div class="modal-body">
-            <div class="modal-title-row">
-              <h3 class="modal-title">${proj.title}</h3>
-              <span class="status-badge ${proj.status === '작업 중' ? 'wip' : ''}">${proj.status || '완료'}</span>
-            </div>
-            <p class="modal-desc">${proj.desc}</p>
-            
-            <div class="interaction-area">
-              <div class="action-row">
-                <button class="btn-action" onclick="handleLike('${proj.id}', this)">❤️ 좋아요 (${proj.likes || 0})</button>
-                ${visitCtaHTML}
-              </div>
-              <div class="comment-list" id="comments-${proj.id}">
-                ${commentsHTML || '<div style="color:#a1a1aa; font-size: 0.95rem;">첫 피드백을 남겨주세요.</div>'}
-              </div>
-              <form class="comment-form" onsubmit="handleComment(event, '${proj.id}')">
-                <input type="text" class="comment-input author" id="name-${proj.id}" placeholder="Name" required onfocus="handleInputFocus(this)" onblur="handleInputBlur()">
-                <input type="text" class="comment-input text" id="text-${proj.id}" placeholder="피드백 남기기" required onfocus="handleInputFocus(this)" onblur="handleInputBlur()">
-                <button type="submit" class="btn-submit-comment">등록</button>
-              </form>
-              
-              <button class="btn-close-bottom" onclick="closeModal()">현재 창 닫기</button>
-            </div>
+      modalInner.innerHTML = `
+        ${safeImgUrl ? `<img src="${safeImgUrl}" class="modal-img" alt="${proj.title}">` : ''}
+        <div class="modal-body">
+          <h3 class="modal-title">${proj.title}</h3>
+          <p class="modal-desc">${proj.desc}</p>
+          
+          <div class="action-row">
+            <button class="btn-action" onclick="handleLike('${proj.id}', this)">Upvote [${proj.likes || 0}]</button>
+            ${visitCtaHTML}
           </div>
+          
+          <div class="comment-section-title">TERMINAL LOGS</div>
+          <div class="comment-list" id="comments-${proj.id}">
+            ${commentsHTML || '<div style="color:var(--text-muted); font-family:monospace;">No logs found. Be the first to execute.</div>'}
+          </div>
+          <form class="comment-form" onsubmit="handleComment(event, '${proj.id}')">
+            <input type="text" class="comment-input" id="name-${proj.id}" placeholder="USER_ID" required>
+            <input type="text" class="comment-input" id="text-${proj.id}" placeholder="INPUT_DATA" required>
+            <button type="submit" class="btn-submit-comment">EXECUTE</button>
+          </form>
         </div>
       `;
       
+      const modal = document.getElementById('project-modal');
       modal.classList.add('active');
       document.body.style.overflow = 'hidden'; 
-
-      // [추가] 모달이 열릴 때 브라우저 히스토리에 가짜 해시 기록을 하나 밀어넣음 (뒤로 가기 방어막)
-      window.history.pushState({ modal: 'open' }, '', '#modal');
+      initCustomCursor(); // 모달 내 요소에 커서 바인딩
     }
 
-    // [수정] 매개변수 isFromPopState 추가
-    function closeModal(isFromPopState = false) {
+    function closeModal() {
       const modal = document.getElementById('project-modal');
       modal.classList.remove('active');
-      const modalContent = modal.querySelector('.modal-content');
-      if (modalContent) modalContent.classList.remove('keyboard-open');
       document.body.style.overflow = '';
       fetchData(); 
-
-      // 사용자가 X버튼이나 하단 '현재 창 닫기' 버튼을 눌렀다면 남겨둔 가짜 URL 해시 기록을 지워줌
-      if (!isFromPopState && window.location.hash === '#modal') {
-        window.history.back();
-      }
-    }
-
-    function setupModalClose() {
-      const modal = document.getElementById('project-modal');
-      modal.addEventListener('click', () => closeModal()); 
     }
 
     function renderSocials(socials) {
       const container = document.getElementById('socials-container');
       container.innerHTML = '';
-      
-      if(!socials || socials.length === 0) {
-        container.innerHTML = `<div class="loader">No Data</div>`; return;
-      }
+      if(!socials) return;
       socials.forEach(social => {
         const card = document.createElement('a');
         card.href = social.url || '#'; card.target = '_blank';
-        card.className = 'social-card'; card.setAttribute('data-platform', social.platform);
+        card.className = 'social-card'; 
         card.innerHTML = `
           <div class="social-platform">${social.platform}</div>
           <div class="social-handle">${social.handle}</div>
-          ${social.stats ? `<div class="social-stats">${social.stats}</div>` : ''}
           <div class="social-desc">${social.desc || ''}</div>
         `;
         container.appendChild(card);
@@ -542,11 +510,11 @@
     }
 
     async function handleLike(projectId, btnElement) {
-      showToast('❤️ 좋아요 완료');
+      showToast('⚡ SYSTEM: Upvote registered.');
       const match = btnElement.innerText.match(/\d+/);
       if(match) {
         const currentNum = parseInt(match[0], 10);
-        btnElement.innerText = `❤️ 좋아요 (${currentNum + 1})`;
+        btnElement.innerHTML = `Upvote [${currentNum + 1}]`;
       }
       try { await fetch(GAS_WEB_APP_URL, { method: 'POST', body: JSON.stringify({ action: 'like', projectId }) }); } 
       catch(e) { console.error(e); }
@@ -557,18 +525,22 @@
       const name = document.getElementById(`name-${projectId}`).value;
       const text = document.getElementById(`text-${projectId}`).value;
       const btn = event.target.querySelector('button');
-      btn.textContent = '...';
+      btn.textContent = 'EXECUTING...';
       
       try {
         await fetch(GAS_WEB_APP_URL, { method: 'POST', body: JSON.stringify({ action: 'comment', projectId, name, text }) });
-        showToast('✅ 피드백 등록 완료');
+        showToast('⚡ SYSTEM: Log appended successfully.');
         const commentList = document.getElementById(`comments-${projectId}`);
-        if(commentList.innerHTML.includes('첫 피드백을 남겨주세요')) commentList.innerHTML = '';
-        commentList.innerHTML += `<div class="comment-item"><span class="comment-user">${name}</span> ${text} <span class="comment-date">지금</span></div>`;
+        if(commentList.innerHTML.includes('No logs found')) commentList.innerHTML = '';
+        
+        const newComment = document.createElement('div');
+        newComment.className = 'comment-item';
+        newComment.innerHTML = `<span class="comment-user">> ${name}_</span><div class="comment-text">${text}</div>`;
+        commentList.appendChild(newComment);
+        
         event.target.reset();
-        handleInputBlur(); 
-      } catch(e) { console.error(e); showToast('❌ 오류 발생'); } 
-      finally { btn.textContent = '등록'; }
+      } catch(e) { showToast('ERR: Failed to append log.'); } 
+      finally { btn.textContent = 'EXECUTE'; }
     }
 
     function setupContactForm() {
@@ -581,15 +553,15 @@
         const email = document.getElementById('c-email').value;
         const message = document.getElementById('c-message').value;
 
-        btn.textContent = 'Sending...'; btn.style.opacity = '0.7';
+        btn.textContent = 'TRANSMITTING...'; btn.style.pointerEvents = 'none';
 
         try {
           const res = await fetch(GAS_WEB_APP_URL, { method: 'POST', body: JSON.stringify({ action: 'contact', name, email, message }) });
           const result = await res.json();
-          if(result.success) { showToast('🚀 전송 완료'); form.reset(); } 
-          else { showToast('❌ 전송 실패'); }
-        } catch(error) { showToast('❌ 연결 오류'); } 
-        finally { btn.textContent = 'Send Message'; btn.style.opacity = '1'; }
+          if(result.success) { showToast('⚡ TRANSMISSION SUCCESSFUL.'); form.reset(); } 
+          else { showToast('ERR: TRANSMISSION FAILED.'); }
+        } catch(error) { showToast('ERR: NETWORK_ERROR.'); } 
+        finally { btn.textContent = 'Transmit'; btn.style.pointerEvents = 'auto'; }
       });
     }
   </script>
