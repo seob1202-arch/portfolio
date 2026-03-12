@@ -24,7 +24,7 @@
       --spring: cubic-bezier(0.175, 0.885, 0.32, 1.1);
     }
 
-    * { margin: 0; padding: 0; box-sizing: border-box; cursor: none; /* 커스텀 커서 사용 */ }
+    * { margin: 0; padding: 0; box-sizing: border-box; cursor: none; }
     
     body {
       font-family: "Pretendard Variable", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
@@ -49,7 +49,6 @@
       pointer-events: none; z-index: -2; transition: width 0.3s, height 0.3s;
     }
     
-    /* 커스텀 마우스 포인터 */
     .custom-cursor {
       position: fixed; top: 0; left: 0; width: 12px; height: 12px;
       background: var(--text-main); border-radius: 50%;
@@ -58,7 +57,7 @@
     }
     body:hover .custom-cursor { width: 12px; height: 12px; }
 
-    /* --- 2. 네비게이션 (Minimal Pill) --- */
+    /* --- 2. 네비게이션 --- */
     nav {
       position: fixed; top: 32px; left: 50%; transform: translateX(-50%); z-index: 100;
       background: var(--bg-glass); backdrop-filter: blur(24px); border: 1px solid var(--border-color);
@@ -67,26 +66,26 @@
     }
     .nav-logo { font-size: 1.2rem; font-weight: 900; color: var(--text-main); text-decoration: none; letter-spacing: 0.05em; text-transform: uppercase; }
     .nav-links { display: flex; gap: 2.5rem; align-items: center; }
-    .nav-links a { text-decoration: none; color: var(--text-muted); font-size: 0.9rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; transition: 0.3s; }
+    .nav-links a { text-decoration: none; color: var(--text-muted); font-size: 0.95rem; font-weight: 600; letter-spacing: 0.05em; transition: 0.3s; }
     .nav-links a:hover { color: var(--text-main); text-shadow: 0 0 10px rgba(255,255,255,0.5); }
 
     main { max-width: 1200px; margin: 0 auto; padding: 12rem 1.5rem 6rem; position: relative; }
     section { margin-bottom: 12rem; }
     h2 { font-size: 3.5rem; font-weight: 900; margin-bottom: 4rem; letter-spacing: -0.04em; color: var(--text-main); text-transform: uppercase; }
 
-    /* --- 3. 헤더 (Kinetic Hero) --- */
+    /* --- 3. 헤더 --- */
     .hero { min-height: 60vh; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; position: relative; }
-    .hero-badge { display: inline-block; padding: 0.5rem 1rem; background: rgba(255,255,255,0.05); border: 1px solid var(--border-color); border-radius: 999px; font-size: 0.85rem; font-weight: 700; letter-spacing: 0.1em; margin-bottom: 2rem; color: var(--accent); text-transform: uppercase; }
+    .hero-badge { display: inline-block; padding: 0.5rem 1rem; background: rgba(255,255,255,0.05); border: 1px solid var(--border-color); border-radius: 999px; font-size: 0.9rem; font-weight: 700; letter-spacing: 0.05em; margin-bottom: 2rem; color: var(--accent); }
     .hero h1 { font-size: clamp(3rem, 8vw, 6.5rem); font-weight: 900; letter-spacing: -0.04em; line-height: 1; margin-bottom: 2rem; position: relative; }
     .hero h1 .vibe-mask {
       background: url('https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=2070&auto=format&fit=crop') center/cover;
       -webkit-background-clip: text; -webkit-text-fill-color: transparent; 
       filter: drop-shadow(0 0 20px rgba(0,229,255,0.3));
     }
-    .hero p { color: var(--text-muted); font-size: 1.4rem; font-weight: 500; max-width: 600px; line-height: 1.6; margin-bottom: 4rem; }
+    .hero p { color: var(--text-muted); font-size: 1.4rem; font-weight: 500; max-width: 600px; line-height: 1.6; margin-bottom: 4rem; word-break: keep-all; }
     .btn-glow {
       position: relative; padding: 1.2rem 3rem; background: transparent; color: var(--text-main);
-      font-size: 1.1rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em;
+      font-size: 1.1rem; font-weight: 800; letter-spacing: 0.05em;
       border: 1px solid var(--border-color); border-radius: 999px; text-decoration: none;
       overflow: hidden; transition: 0.4s ease; display: inline-flex;
     }
@@ -97,14 +96,21 @@
     .btn-glow:hover::before { left: 0; }
     .btn-glow:hover { border-color: transparent; box-shadow: 0 0 30px var(--accent-glow); transform: scale(1.05); }
 
-    /* --- 4. 인터랙티브 카드 그리드 (Linear/Vercel Style Hover) --- */
+    /* --- 4. 카드 그리드 & 스켈레톤 로딩 --- */
     .project-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 2rem; }
+    
+    /* 스켈레톤 애니메이션 */
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+    .skeleton-box { background: rgba(255,255,255,0.05); border-radius: var(--radius-lg); height: 400px; animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+    .skeleton-social { background: rgba(255,255,255,0.05); border-radius: 0; height: 180px; animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+
     .card-wrapper {
       position: relative; border-radius: var(--radius-lg); background: rgba(255,255,255,0.02);
-      padding: 1px; /* 얇은 테두리 효과를 위한 패딩 */
-      overflow: hidden; cursor: pointer;
+      padding: 1px; overflow: hidden; cursor: pointer;
     }
-    /* 마우스 움직임에 따른 테두리 빛 효과 */
     .card-wrapper::before {
       content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
       background: radial-gradient(800px circle at var(--mouse-x, 0) var(--mouse-y, 0), rgba(255,255,255,0.3), transparent 40%);
@@ -117,9 +123,7 @@
       height: 100%; z-index: 1; display: flex; flex-direction: column; overflow: hidden;
       backdrop-filter: blur(10px); transition: transform 0.4s var(--spring);
     }
-    .card-wrapper:hover .project-card { transform: scale(0.98); } /* 누르는 듯한 햅틱 효과 */
-    
-    /* 마우스 움직임에 따른 내부 반사광 */
+    .card-wrapper:hover .project-card { transform: scale(0.98); }
     .project-card::after {
       content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
       background: radial-gradient(600px circle at var(--mouse-x, 0) var(--mouse-y, 0), rgba(255,255,255,0.06), transparent 40%);
@@ -132,11 +136,11 @@
     .card-wrapper:hover .project-img { opacity: 1; filter: grayscale(0%); transform: scale(1.05); }
     .project-content { padding: 2.5rem; display: flex; flex-direction: column; flex: 1; position: relative; z-index: 3; }
     .project-title { font-size: 1.6rem; font-weight: 800; margin-bottom: 0.5rem; letter-spacing: -0.02em; }
-    .status-badge { display: inline-block; font-size: 0.75rem; font-weight: 800; padding: 0.3rem 0.8rem; border-radius: 4px; background: rgba(255,255,255,0.1); color: var(--text-main); margin-bottom: 1.5rem; text-transform: uppercase; }
-    .project-desc-short { color: var(--text-muted); font-size: 1.05rem; line-height: 1.6; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 2.5rem; }
-    .project-meta { margin-top: auto; display: flex; gap: 1.5rem; font-size: 0.95rem; font-weight: 700; font-family: monospace; }
+    .status-badge { display: inline-block; font-size: 0.8rem; font-weight: 800; padding: 0.3rem 0.8rem; border-radius: 4px; background: rgba(255,255,255,0.1); color: var(--text-main); margin-bottom: 1.5rem; }
+    .project-desc-short { color: var(--text-muted); font-size: 1.05rem; line-height: 1.6; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 2.5rem; word-break: keep-all; }
+    .project-meta { margin-top: auto; display: flex; gap: 1.5rem; font-size: 0.95rem; font-weight: 700; }
 
-    /* --- 5. 에코시스템 (Bento Grid) --- */
+    /* --- 5. 에코시스템 --- */
     .bento-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1px; background: var(--border-color); border: 1px solid var(--border-color); border-radius: var(--radius-xl); overflow: hidden; }
     .social-card {
       background: var(--bg-surface); padding: 4rem 3rem; display: flex; flex-direction: column; gap: 1.5rem;
@@ -146,76 +150,78 @@
     .social-card:hover { background: rgba(255,255,255,0.05); }
     .social-platform { font-size: 0.9rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.2em; color: var(--text-muted); }
     .social-handle { font-size: 2.2rem; font-weight: 900; letter-spacing: -0.03em; }
-    .social-desc { font-size: 1.1rem; color: var(--text-muted); }
+    .social-desc { font-size: 1.1rem; color: var(--text-muted); word-break: keep-all; }
 
-    /* --- 6. 연락처 (Terminal Style) --- */
+    /* --- 6. 연락처 --- */
     .contact-container {
       background: #000; border: 1px solid var(--border-color); border-radius: var(--radius-xl);
       padding: 5rem; display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; position: relative;
     }
-    .contact-info-text { font-size: 4rem; font-weight: 900; line-height: 1; margin-bottom: 2rem; text-transform: uppercase; }
+    .contact-info-text { font-size: 4rem; font-weight: 900; line-height: 1.1; margin-bottom: 2rem; text-transform: uppercase; }
     .contact-info-text span { color: var(--accent); }
     .form-input { 
       width: 100%; padding: 1.5rem 0; border: none; border-bottom: 1px solid var(--border-color); 
-      background: transparent; color: var(--text-main); font-size: 1.2rem; font-family: monospace;
+      background: transparent; color: var(--text-main); font-size: 1.1rem; 
       outline: none; transition: 0.3s; 
     }
     .form-input:focus { border-color: var(--accent); box-shadow: 0 10px 20px -10px var(--accent-glow); }
-    .form-input::placeholder { color: #555; }
+    .form-input::placeholder { color: #666; font-weight: 500; }
     .btn-submit { 
       background: var(--text-main); color: #000; border: none; padding: 1.5rem; width: 100%;
-      border-radius: 8px; font-size: 1.2rem; font-weight: 900; text-transform: uppercase; 
+      border-radius: 8px; font-size: 1.2rem; font-weight: 900;
       cursor: none; margin-top: 2rem; transition: 0.3s;
     }
     .btn-submit:hover { background: var(--accent); transform: translateY(-4px); box-shadow: 0 10px 20px var(--accent-glow); }
 
-    /* --- 7. 모달 (Immersive Fullscreen Overlay) --- */
+    /* --- 7. 모달 & 입력창 대응 --- */
     .modal-overlay {
       position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-      z-index: 1000; display: flex; justify-content: flex-end; /* 오른쪽에서 슬라이드 */
+      z-index: 1000; display: flex; justify-content: flex-end; 
       opacity: 0; pointer-events: none; transition: opacity 0.4s ease;
     }
     .modal-overlay.active { opacity: 1; pointer-events: auto; }
+    
+    /* 모달 컨텐츠에 패딩 트랜지션 추가 (키보드 대응) */
     .modal-content {
       background: var(--bg-base); width: 100%; max-width: 600px; height: 100vh;
       overflow-y: auto; position: relative; border-left: 1px solid var(--border-color);
-      transform: translateX(100%); transition: transform 0.6s var(--spring);
+      transform: translateX(100%); transition: transform 0.6s var(--spring), padding-bottom 0.3s ease;
       display: flex; flex-direction: column;
     }
+    .modal-content.keyboard-active { padding-bottom: 50vh !important; } /* 키보드 활성화 시 공간 확보 */
     .modal-overlay.active .modal-content { transform: translateX(0); }
     
     .modal-close-area { position: absolute; top: 0; left: 0; width: calc(100% - 600px); height: 100%; cursor: none; }
     
     .modal-header { position: sticky; top: 0; display: flex; justify-content: space-between; align-items: center; padding: 2rem; background: rgba(5,5,5,0.8); backdrop-filter: blur(10px); z-index: 10; border-bottom: 1px solid var(--border-color); }
-    .modal-title-sm { font-size: 1.2rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; }
+    .modal-title-sm { font-size: 1.1rem; font-weight: 800; letter-spacing: 0.05em; color: var(--text-muted); }
     .modal-close { background: transparent; border: 1px solid var(--border-color); width: 44px; height: 44px; border-radius: 50%; color: var(--text-main); display: flex; justify-content: center; align-items: center; cursor: none; transition: 0.3s; }
     .modal-close:hover { background: var(--text-main); color: #000; transform: rotate(90deg); }
     
     .modal-img { width: 100%; height: 400px; object-fit: cover; }
     .modal-body { padding: 3rem; }
-    .modal-title { font-size: 3rem; font-weight: 900; line-height: 1.1; margin-bottom: 1.5rem; }
-    .modal-desc { font-size: 1.2rem; color: var(--text-muted); margin-bottom: 3rem; line-height: 1.8; }
+    .modal-title { font-size: 2.5rem; font-weight: 900; line-height: 1.2; margin-bottom: 1.5rem; word-break: keep-all; }
+    .modal-desc { font-size: 1.1rem; color: var(--text-muted); margin-bottom: 3rem; line-height: 1.8; word-break: keep-all; }
     
     .action-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 3rem; }
-    .btn-action, .btn-visit { background: transparent; color: var(--text-main); border: 1px solid var(--border-color); padding: 1.2rem; border-radius: 8px; font-weight: 800; text-align: center; text-decoration: none; text-transform: uppercase; cursor: none; transition: 0.3s; }
+    .btn-action, .btn-visit { background: transparent; color: var(--text-main); border: 1px solid var(--border-color); padding: 1.2rem; border-radius: 8px; font-weight: 800; font-size: 1.05rem; text-align: center; text-decoration: none; cursor: none; transition: 0.3s; }
     .btn-action:hover { border-color: var(--accent); color: var(--accent); }
     .btn-visit { background: var(--text-main); color: #000; }
     .btn-visit:hover { background: var(--accent); color: #000; border-color: var(--accent); box-shadow: 0 0 20px var(--accent-glow); }
 
-    .comment-section-title { font-size: 1.5rem; font-weight: 900; margin-bottom: 1.5rem; border-top: 1px solid var(--border-color); padding-top: 3rem; }
+    .comment-section-title { font-size: 1.3rem; font-weight: 800; margin-bottom: 1.5rem; border-top: 1px solid var(--border-color); padding-top: 3rem; }
     .comment-list { display: flex; flex-direction: column; gap: 1.5rem; margin-bottom: 2rem; }
     .comment-item { padding: 1.5rem; background: rgba(255,255,255,0.03); border-radius: 12px; border: 1px solid var(--border-color); }
-    .comment-user { font-weight: 900; color: var(--accent); font-family: monospace; font-size: 1.1rem; margin-bottom: 0.5rem; display: block; }
-    .comment-text { color: var(--text-main); font-size: 1.05rem; }
+    .comment-user { font-weight: 800; color: var(--accent); font-size: 1.05rem; margin-bottom: 0.5rem; display: block; }
+    .comment-text { color: var(--text-main); font-size: 1.05rem; line-height: 1.6; }
     
     .comment-form { display: flex; flex-direction: column; gap: 1rem; }
     .comment-input { padding: 1.2rem; border: 1px solid var(--border-color); background: rgba(0,0,0,0.5); color: #fff; border-radius: 8px; font-family: inherit; font-size: 1rem; outline: none; }
     .comment-input:focus { border-color: var(--accent); }
-    .btn-submit-comment { background: var(--text-main); color: #000; border: none; padding: 1.2rem; border-radius: 8px; font-weight: 900; cursor: none; transition: 0.3s; }
+    .btn-submit-comment { background: var(--text-main); color: #000; border: none; padding: 1.2rem; border-radius: 8px; font-weight: 900; font-size: 1.05rem; cursor: none; transition: 0.3s; }
     .btn-submit-comment:hover { background: var(--accent); }
 
-    /* --- 8. 기타 --- */
-    .toast { position: fixed; bottom: 40px; right: 40px; background: var(--vibe-gradient); color: #fff; padding: 1.2rem 2.5rem; border-radius: 8px; font-weight: 900; font-size: 1.1rem; box-shadow: 0 10px 30px rgba(0,229,255,0.3); transform: translateY(100px); opacity: 0; transition: 0.5s var(--spring); z-index: 9999; }
+    .toast { position: fixed; bottom: 40px; right: 40px; background: var(--vibe-gradient); color: #fff; padding: 1.2rem 2.5rem; border-radius: 8px; font-weight: 800; font-size: 1.05rem; box-shadow: 0 10px 30px rgba(0,229,255,0.3); transform: translateY(100px); opacity: 0; transition: 0.5s var(--spring); z-index: 9999; }
     .toast.show { transform: translateY(0); opacity: 1; }
 
     /* ★ 극강의 모바일 텐션 ★ */
@@ -225,21 +231,20 @@
       .nav-links a { display: none; }
       
       main { padding: 8rem 1rem 4rem; }
-      h2 { font-size: 2.5rem; margin-bottom: 2rem; }
-      .hero h1 { font-size: 3.5rem; line-height: 1.1; }
+      h2 { font-size: 2.2rem; margin-bottom: 2rem; }
+      .hero h1 { font-size: 3rem; line-height: 1.1; }
       .hero p { font-size: 1.1rem; }
       
       .contact-container { grid-template-columns: 1fr; padding: 3rem 1.5rem; }
-      .contact-info-text { font-size: 2.5rem; }
+      .contact-info-text { font-size: 2.2rem; }
       
-      /* 모바일 바텀 시트 (풀화면) */
       .modal-overlay { justify-content: flex-end; align-items: flex-end; }
       .modal-content { max-width: 100%; height: 90dvh; border-radius: var(--radius-xl) var(--radius-xl) 0 0; transform: translateY(100%); border-left: none; border-top: 1px solid var(--border-color); }
       .modal-overlay.active .modal-content { transform: translateY(0); }
       .modal-header { padding: 1.5rem; }
       .modal-img { height: 250px; }
       .modal-body { padding: 1.5rem; }
-      .modal-title { font-size: 2rem; }
+      .modal-title { font-size: 1.8rem; }
       .action-row { grid-template-columns: 1fr; }
     }
   </style>
@@ -253,47 +258,52 @@
   <nav>
     <a href="#" class="nav-logo">Vibe Lab 🧪</a>
     <div class="nav-links">
-      <a href="#projects-section">Projects</a>
-      <a href="#socials-section">Ecosystem</a>
-      <a href="#contact-section">Terminal</a>
+      <a href="#projects-section">프로젝트</a>
+      <a href="#socials-section">생태계</a>
+      <a href="#contact-section">커피챗</a>
     </div>
   </nav>
 
   <main>
     <section class="hero">
-      <div class="hero-badge">System Online</div>
+      <div class="hero-badge">✨ 언제나 환영해요</div>
       <h1>
         <span class="vibe-mask">LIMITLESS</span><br>
         CREATION.
       </h1>
-      <p>코드 한 줄 몰라도 괜찮습니다. AI와 당신의 감각(Vibe)만 있다면 무엇이든 만들어내는 1인 개발 생태계에 접속하세요.</p>
-      <a href="#projects-section" class="btn-glow">Explore Lab</a>
+      <p>코드 한 줄 몰라도 괜찮습니다. AI와 당신의 감각(Vibe)만 있다면 무엇이든 만들어내는 1인 개발 생태계에 놀러오세요!</p>
+      <a href="#projects-section" class="btn-glow">프로젝트 구경하기 👀</a>
     </section>
 
     <section id="projects-section">
-      <h2>Deployments</h2>
+      <h2>Projects</h2>
       <div id="project-container" class="project-grid">
-        <div style="color:var(--text-muted); font-family:monospace; padding: 2rem;">Initializing data stream...</div>
+        <div class="skeleton-box"></div>
+        <div class="skeleton-box"></div>
+        <div class="skeleton-box"></div>
       </div>
     </section>
 
     <section id="socials-section">
-      <h2>Network</h2>
+      <h2>Ecosystem</h2>
       <div id="socials-container" class="bento-grid">
-        </div>
+        <div class="skeleton-social"></div>
+        <div class="skeleton-social"></div>
+        <div class="skeleton-social"></div>
+      </div>
     </section>
 
     <section id="contact-section">
       <div class="contact-container">
         <div>
-          <h2 class="contact-info-text">INITIATE<br><span>PROTOCOL.</span></h2>
-          <p style="color:var(--text-muted); font-family:monospace; font-size: 1.1rem;">새로운 아이디어나 협업 제안을 터미널에 입력하세요.</p>
+          <h2 class="contact-info-text">LET'S MAKE<br><span>MAGIC.</span></h2>
+          <p style="color:var(--text-muted); font-size: 1.1rem; word-break: keep-all;">재미있는 상상이나 가벼운 커피챗, 어떤 이야기든 편하게 남겨주세요!</p>
         </div>
         <form id="contact-form">
-          <input type="text" id="c-name" class="form-input" placeholder="> USER_NAME" required>
-          <input type="email" id="c-email" class="form-input" placeholder="> COMM_CHANNEL (Email)" required>
-          <input type="text" id="c-message" class="form-input" placeholder="> EXECUTE_COMMAND (Message)" required>
-          <button type="submit" class="btn-submit" id="btn-contact-submit">Transmit</button>
+          <input type="text" id="c-name" class="form-input" placeholder="> 성함이나 닉네임을 알려주세요" required>
+          <input type="email" id="c-email" class="form-input" placeholder="> 답장 받으실 이메일 주소" required>
+          <input type="text" id="c-message" class="form-input" placeholder="> 어떤 재미있는 이야기를 나누고 싶으신가요?" required>
+          <button type="submit" class="btn-submit" id="btn-contact-submit">메시지 보내기 🚀</button>
         </form>
       </div>
     </section>
@@ -301,9 +311,9 @@
 
   <div id="project-modal" class="modal-overlay">
     <div class="modal-close-area" onclick="closeModal()"></div>
-    <div class="modal-content">
+    <div class="modal-content" id="modal-content-area">
       <div class="modal-header">
-        <span class="modal-title-sm">Project Details</span>
+        <span class="modal-title-sm">프로젝트 상세 보기</span>
         <button class="modal-close" onclick="closeModal()">✕</button>
       </div>
       <div id="modal-inner-content"></div>
@@ -322,9 +332,32 @@
       setupContactForm();
     });
 
-    // --- 1. 커스텀 커서 & 배경 글로우 로직 ---
+    // --- 키보드 가림 현상 방지 로직 (모바일) ---
+    function handleInputFocus(element) {
+      if (window.innerWidth <= 768) {
+        const modalContent = document.getElementById('modal-content-area');
+        modalContent.classList.add('keyboard-active'); // 하단 50vh 여백 생성
+        // 키보드가 올라오는 시간(약 300ms) 대기 후 스크롤
+        setTimeout(() => {
+          element.scrollIntoView({ behavior: "smooth", block: "center" });
+        }, 300);
+      }
+    }
+
+    function handleInputBlur() {
+      if (window.innerWidth <= 768) {
+        // 다른 인풋으로 바로 넘어가는 경우를 대비해 100ms 지연
+        setTimeout(() => {
+          if (document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
+            document.getElementById('modal-content-area').classList.remove('keyboard-active');
+          }
+        }, 100);
+      }
+    }
+
+    // --- 커스텀 커서 & 배경 빛 효과 ---
     function initCustomCursor() {
-      if(window.innerWidth <= 768) return; // 모바일 제외
+      if(window.innerWidth <= 768) return; 
       const cursor = document.querySelector('.custom-cursor');
       const glow = document.getElementById('cursor-glow');
       
@@ -332,14 +365,12 @@
         cursor.style.left = e.clientX + 'px';
         cursor.style.top = e.clientY + 'px';
         
-        // 배경 글로우는 약간의 딜레이를 주어 부드럽게 따라오게 함 (퍼포먼스 고려해 직접 수정)
         glow.animate({
           left: `${e.clientX}px`,
           top: `${e.clientY + window.scrollY}px`
         }, { duration: 500, fill: "forwards" });
       });
 
-      // Hover 효과가 필요한 요소들에 커서 변형
       const interactives = document.querySelectorAll('a, button, input, .card-wrapper');
       interactives.forEach(el => {
         el.addEventListener('mouseenter', () => { cursor.style.transform = 'translate(-50%, -50%) scale(4)'; cursor.style.background = 'transparent'; cursor.style.border = '1px solid white'; });
@@ -347,7 +378,7 @@
       });
     }
 
-    // --- 2. 카드 호버 시 조명 위치 계산 (Linear Style) ---
+    // --- 카드 호버 효과 ---
     function attachCardHoverEffects() {
       const cards = document.querySelectorAll('.card-wrapper');
       cards.forEach(card => {
@@ -359,7 +390,6 @@
           card.style.setProperty('--mouse-y', `${y}px`);
         });
       });
-      // 동적으로 생성된 카드들에 커서 이벤트 다시 바인딩
       initCustomCursor();
     }
 
@@ -382,23 +412,42 @@
       return strUrl;
     }
 
+    // --- 데이터 패칭 (로컬 캐싱 + 스켈레톤 적용) ---
     async function fetchData() {
       const projContainer = document.getElementById('project-container');
-      const socialContainer = document.getElementById('socials-container');
       
       if(GAS_WEB_APP_URL.includes('YOUR_SCRIPT_ID')) {
-        projContainer.innerHTML = `<div style="color:#ff003c; font-family:monospace;">ERR: ENDPOINT_NOT_CONFIGURED</div>`;
+        projContainer.innerHTML = `<div style="color:#ff003c; padding: 2rem;">앗! 데이터 연결 주소를 설정해주세요.</div>`;
         return;
       }
 
+      // 1. 캐시된 데이터가 있으면 즉시 렌더링 (로딩 시간 제로 체감)
+      const cachedData = localStorage.getItem('vibe_lab_cache');
+      if (cachedData) {
+        try {
+          const parsedCache = JSON.parse(cachedData);
+          globalData = parsedCache;
+          renderProjects(parsedCache.projects, parsedCache.comments);
+          renderSocials(parsedCache.socials);
+        } catch(e) { console.error(e); }
+      }
+
+      // 2. 백그라운드에서 최신 데이터 가져오기
       try {
         const response = await fetch(GAS_WEB_APP_URL);
         const data = await response.json();
-        globalData = data; 
-        renderProjects(data.projects, data.comments);
-        renderSocials(data.socials);
+        
+        // 데이터에 변경이 있을 때만 덮어쓰고 다시 렌더링
+        if (JSON.stringify(globalData) !== JSON.stringify(data)) {
+          globalData = data; 
+          localStorage.setItem('vibe_lab_cache', JSON.stringify(data));
+          renderProjects(data.projects, data.comments);
+          renderSocials(data.socials);
+        }
       } catch (error) {
-        projContainer.innerHTML = `<div style="color:#ff003c; font-family:monospace;">ERR: CONNECTION_TIMEOUT</div>`;
+        if (!cachedData) {
+          projContainer.innerHTML = `<div style="color:#ff003c; padding: 2rem;">데이터를 불러오는데 실패했어요 😢 잠시 후 다시 시도해주세요.</div>`;
+        }
       }
     }
 
@@ -419,15 +468,15 @@
         cardWrap.innerHTML = `
           <div class="project-card">
             <div class="project-img-wrapper">
-              ${safeImgUrl ? `<img src="${safeImgUrl}" class="project-img" alt="${proj.title}" loading="lazy">` : '<div style="display:flex;height:100%;align-items:center;justify-content:center;color:#555;font-family:monospace;">NO_IMAGE_DATA</div>'}
+              ${safeImgUrl ? `<img src="${safeImgUrl}" class="project-img" alt="${proj.title}" loading="lazy">` : '<div style="display:flex;height:100%;align-items:center;justify-content:center;color:#666;">이미지가 없어요 😢</div>'}
             </div>
             <div class="project-content">
-              <span class="status-badge">${proj.status || 'DEPLOYED'}</span>
+              <div><span class="status-badge">${proj.status || '출시 완료'}</span></div>
               <h3 class="project-title">${proj.title}</h3>
               <p class="project-desc-short">${proj.desc}</p>
               <div class="project-meta">
-                <span>LIKES [${likesCount}]</span>
-                <span>COMM [${commentsCount}]</span>
+                <span>❤️ 좋아요 ${likesCount}</span>
+                <span>💬 댓글 ${commentsCount}</span>
               </div>
             </div>
           </div>
@@ -444,14 +493,14 @@
       const projComments = globalData.comments.filter(c => c.projectId == proj.id);
       const commentsHTML = projComments.map(c => 
         `<div class="comment-item">
-          <span class="comment-user">> ${c.name}_</span>
+          <span class="comment-user">👤 ${c.name} 님의 이야기</span>
           <div class="comment-text">${c.text}</div>
         </div>`
       ).join('');
 
       const rawLink = String(proj.link || '').trim();
       const hasValidLink = rawLink.startsWith('http://') || rawLink.startsWith('https://');
-      const visitCtaHTML = hasValidLink ? `<a href="${rawLink}" target="_blank" class="btn-visit">Launch App</a>` : '';
+      const visitCtaHTML = hasValidLink ? `<a href="${rawLink}" target="_blank" class="btn-visit">서비스 구경가기 ↗</a>` : '';
       const safeImgUrl = getSafeImageUrl(proj.image);
 
       const modalInner = document.getElementById('modal-inner-content');
@@ -463,18 +512,18 @@
           <p class="modal-desc">${proj.desc}</p>
           
           <div class="action-row">
-            <button class="btn-action" onclick="handleLike('${proj.id}', this)">Upvote [${proj.likes || 0}]</button>
+            <button class="btn-action" onclick="handleLike('${proj.id}', this)">❤️ 응원하기 (${proj.likes || 0})</button>
             ${visitCtaHTML}
           </div>
           
-          <div class="comment-section-title">TERMINAL LOGS</div>
+          <div class="comment-section-title">따뜻한 피드백을 남겨주세요 💬</div>
           <div class="comment-list" id="comments-${proj.id}">
-            ${commentsHTML || '<div style="color:var(--text-muted); font-family:monospace;">No logs found. Be the first to execute.</div>'}
+            ${commentsHTML || '<div style="color:var(--text-muted);">아직 작성된 글이 없어요. 첫 번째 주인공이 되어주세요! ✨</div>'}
           </div>
           <form class="comment-form" onsubmit="handleComment(event, '${proj.id}')">
-            <input type="text" class="comment-input" id="name-${proj.id}" placeholder="USER_ID" required>
-            <input type="text" class="comment-input" id="text-${proj.id}" placeholder="INPUT_DATA" required>
-            <button type="submit" class="btn-submit-comment">EXECUTE</button>
+            <input type="text" class="comment-input" id="name-${proj.id}" placeholder="닉네임을 알려주세요" required onfocus="handleInputFocus(this)" onblur="handleInputBlur()">
+            <input type="text" class="comment-input" id="text-${proj.id}" placeholder="어떤 점이 좋았나요? 편하게 적어주세요!" required onfocus="handleInputFocus(this)" onblur="handleInputBlur()">
+            <button type="submit" class="btn-submit-comment">등록하기</button>
           </form>
         </div>
       `;
@@ -482,13 +531,16 @@
       const modal = document.getElementById('project-modal');
       modal.classList.add('active');
       document.body.style.overflow = 'hidden'; 
-      initCustomCursor(); // 모달 내 요소에 커서 바인딩
+      initCustomCursor(); 
     }
 
     function closeModal() {
       const modal = document.getElementById('project-modal');
       modal.classList.remove('active');
       document.body.style.overflow = '';
+      
+      // 모달 닫힐 때 여백 초기화
+      document.getElementById('modal-content-area').classList.remove('keyboard-active');
       fetchData(); 
     }
 
@@ -510,11 +562,11 @@
     }
 
     async function handleLike(projectId, btnElement) {
-      showToast('⚡ SYSTEM: Upvote registered.');
+      showToast('❤️ 좋아요! 따뜻한 응원 감사합니다.');
       const match = btnElement.innerText.match(/\d+/);
       if(match) {
         const currentNum = parseInt(match[0], 10);
-        btnElement.innerHTML = `Upvote [${currentNum + 1}]`;
+        btnElement.innerHTML = `❤️ 응원하기 (${currentNum + 1})`;
       }
       try { await fetch(GAS_WEB_APP_URL, { method: 'POST', body: JSON.stringify({ action: 'like', projectId }) }); } 
       catch(e) { console.error(e); }
@@ -525,22 +577,23 @@
       const name = document.getElementById(`name-${projectId}`).value;
       const text = document.getElementById(`text-${projectId}`).value;
       const btn = event.target.querySelector('button');
-      btn.textContent = 'EXECUTING...';
+      btn.textContent = '등록 중...';
       
       try {
         await fetch(GAS_WEB_APP_URL, { method: 'POST', body: JSON.stringify({ action: 'comment', projectId, name, text }) });
-        showToast('⚡ SYSTEM: Log appended successfully.');
+        showToast('✅ 소중한 피드백이 등록되었어요!');
         const commentList = document.getElementById(`comments-${projectId}`);
-        if(commentList.innerHTML.includes('No logs found')) commentList.innerHTML = '';
+        if(commentList.innerHTML.includes('첫 번째 주인공이')) commentList.innerHTML = '';
         
         const newComment = document.createElement('div');
         newComment.className = 'comment-item';
-        newComment.innerHTML = `<span class="comment-user">> ${name}_</span><div class="comment-text">${text}</div>`;
+        newComment.innerHTML = `<span class="comment-user">👤 ${name} 님의 이야기</span><div class="comment-text">${text}</div>`;
         commentList.appendChild(newComment);
         
         event.target.reset();
-      } catch(e) { showToast('ERR: Failed to append log.'); } 
-      finally { btn.textContent = 'EXECUTE'; }
+        handleInputBlur(); // 전송 성공 후 입력창 내려가도록 조치
+      } catch(e) { showToast('❌ 등록에 실패했어요. 잠시 후 시도해주세요.'); } 
+      finally { btn.textContent = '등록하기'; }
     }
 
     function setupContactForm() {
@@ -553,15 +606,15 @@
         const email = document.getElementById('c-email').value;
         const message = document.getElementById('c-message').value;
 
-        btn.textContent = 'TRANSMITTING...'; btn.style.pointerEvents = 'none';
+        btn.textContent = '전송 중... 🚀'; btn.style.pointerEvents = 'none';
 
         try {
           const res = await fetch(GAS_WEB_APP_URL, { method: 'POST', body: JSON.stringify({ action: 'contact', name, email, message }) });
           const result = await res.json();
-          if(result.success) { showToast('⚡ TRANSMISSION SUCCESSFUL.'); form.reset(); } 
-          else { showToast('ERR: TRANSMISSION FAILED.'); }
-        } catch(error) { showToast('ERR: NETWORK_ERROR.'); } 
-        finally { btn.textContent = 'Transmit'; btn.style.pointerEvents = 'auto'; }
+          if(result.success) { showToast('🚀 성공적으로 메시지를 보냈어요!'); form.reset(); } 
+          else { showToast('❌ 전송에 실패했어요.'); }
+        } catch(error) { showToast('❌ 네트워크 오류가 발생했어요.'); } 
+        finally { btn.textContent = '메시지 보내기 🚀'; btn.style.pointerEvents = 'auto'; }
       });
     }
   </script>
