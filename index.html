@@ -99,7 +99,6 @@
     /* --- 4. 카드 그리드 & 스켈레톤 로딩 --- */
     .project-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 2rem; }
     
-    /* 스켈레톤 애니메이션 */
     @keyframes pulse {
       0%, 100% { opacity: 1; }
       50% { opacity: 0.4; }
@@ -181,14 +180,13 @@
     }
     .modal-overlay.active { opacity: 1; pointer-events: auto; }
     
-    /* 모달 컨텐츠에 패딩 트랜지션 추가 (키보드 대응) */
     .modal-content {
       background: var(--bg-base); width: 100%; max-width: 600px; height: 100vh;
       overflow-y: auto; position: relative; border-left: 1px solid var(--border-color);
       transform: translateX(100%); transition: transform 0.6s var(--spring), padding-bottom 0.3s ease;
       display: flex; flex-direction: column;
     }
-    .modal-content.keyboard-active { padding-bottom: 50vh !important; } /* 키보드 활성화 시 공간 확보 */
+    .modal-content.keyboard-active { padding-bottom: 50vh !important; }
     .modal-overlay.active .modal-content { transform: translateX(0); }
     
     .modal-close-area { position: absolute; top: 0; left: 0; width: calc(100% - 600px); height: 100%; cursor: none; }
@@ -221,10 +219,18 @@
     .btn-submit-comment { background: var(--text-main); color: #000; border: none; padding: 1.2rem; border-radius: 8px; font-weight: 900; font-size: 1.05rem; cursor: none; transition: 0.3s; }
     .btn-submit-comment:hover { background: var(--accent); }
 
+    /* 모달 하단 닫기 버튼 스타일 추가 */
+    .btn-close-bottom {
+      background: transparent; color: var(--text-muted); border: 1px solid var(--border-color);
+      padding: 1.2rem; border-radius: 8px; font-weight: 800; font-size: 1.05rem;
+      width: 100%; cursor: none; transition: 0.3s; margin-top: 1rem; text-align: center;
+    }
+    .btn-close-bottom:hover { background: rgba(255,255,255,0.05); color: var(--text-main); border-color: var(--text-muted); }
+
     .toast { position: fixed; bottom: 40px; right: 40px; background: var(--vibe-gradient); color: #fff; padding: 1.2rem 2.5rem; border-radius: 8px; font-weight: 800; font-size: 1.05rem; box-shadow: 0 10px 30px rgba(0,229,255,0.3); transform: translateY(100px); opacity: 0; transition: 0.5s var(--spring); z-index: 9999; }
     .toast.show { transform: translateY(0); opacity: 1; }
 
-    /* ★ 극강의 모바일 텐션 ★ */
+    /* ★ 모바일 최적화 ★ */
     @media (max-width: 768px) {
       * { cursor: auto; } .custom-cursor, #cursor-glow, .modal-close-area { display: none; }
       nav { width: calc(100% - 2rem); padding: 0.8rem 1.5rem; gap: 1rem; justify-content: space-between; }
@@ -246,6 +252,8 @@
       .modal-body { padding: 1.5rem; }
       .modal-title { font-size: 1.8rem; }
       .action-row { grid-template-columns: 1fr; }
+      
+      .btn-close-bottom { cursor: auto; margin-bottom: 2rem; }
     }
   </style>
 </head>
@@ -310,11 +318,11 @@
   </main>
 
   <div id="project-modal" class="modal-overlay">
-    <div class="modal-close-area" onclick="closeModal()"></div>
+    <div class="modal-close-area" onclick="closeModal(false)"></div>
     <div class="modal-content" id="modal-content-area">
       <div class="modal-header">
         <span class="modal-title-sm">프로젝트 상세 보기</span>
-        <button class="modal-close" onclick="closeModal()">✕</button>
+        <button class="modal-close" onclick="closeModal(false)">✕</button>
       </div>
       <div id="modal-inner-content"></div>
     </div>
@@ -330,14 +338,21 @@
       initCustomCursor();
       fetchData();
       setupContactForm();
+      
+      // ★ 추가: 안드로이드 기기 뒤로가기 버튼 이벤트 리스너
+      window.addEventListener('popstate', () => {
+        const modal = document.getElementById('project-modal');
+        // 뒤로가기가 발생했는데 모달이 열려있다면 모달만 닫도록 지시 (true 파라미터 전달)
+        if (modal.classList.contains('active')) {
+          closeModal(true); 
+        }
+      });
     });
 
-    // --- 키보드 가림 현상 방지 로직 (모바일) ---
     function handleInputFocus(element) {
       if (window.innerWidth <= 768) {
         const modalContent = document.getElementById('modal-content-area');
-        modalContent.classList.add('keyboard-active'); // 하단 50vh 여백 생성
-        // 키보드가 올라오는 시간(약 300ms) 대기 후 스크롤
+        modalContent.classList.add('keyboard-active'); 
         setTimeout(() => {
           element.scrollIntoView({ behavior: "smooth", block: "center" });
         }, 300);
@@ -346,7 +361,6 @@
 
     function handleInputBlur() {
       if (window.innerWidth <= 768) {
-        // 다른 인풋으로 바로 넘어가는 경우를 대비해 100ms 지연
         setTimeout(() => {
           if (document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
             document.getElementById('modal-content-area').classList.remove('keyboard-active');
@@ -355,7 +369,6 @@
       }
     }
 
-    // --- 커스텀 커서 & 배경 빛 효과 ---
     function initCustomCursor() {
       if(window.innerWidth <= 768) return; 
       const cursor = document.querySelector('.custom-cursor');
@@ -378,7 +391,6 @@
       });
     }
 
-    // --- 카드 호버 효과 ---
     function attachCardHoverEffects() {
       const cards = document.querySelectorAll('.card-wrapper');
       cards.forEach(card => {
@@ -412,16 +424,13 @@
       return strUrl;
     }
 
-    // --- 데이터 패칭 (로컬 캐싱 + 스켈레톤 적용) ---
     async function fetchData() {
       const projContainer = document.getElementById('project-container');
-      
       if(GAS_WEB_APP_URL.includes('YOUR_SCRIPT_ID')) {
         projContainer.innerHTML = `<div style="color:#ff003c; padding: 2rem;">앗! 데이터 연결 주소를 설정해주세요.</div>`;
         return;
       }
 
-      // 1. 캐시된 데이터가 있으면 즉시 렌더링 (로딩 시간 제로 체감)
       const cachedData = localStorage.getItem('vibe_lab_cache');
       if (cachedData) {
         try {
@@ -432,12 +441,10 @@
         } catch(e) { console.error(e); }
       }
 
-      // 2. 백그라운드에서 최신 데이터 가져오기
       try {
         const response = await fetch(GAS_WEB_APP_URL);
         const data = await response.json();
         
-        // 데이터에 변경이 있을 때만 덮어쓰고 다시 렌더링
         if (JSON.stringify(globalData) !== JSON.stringify(data)) {
           globalData = data; 
           localStorage.setItem('vibe_lab_cache', JSON.stringify(data));
@@ -525,6 +532,8 @@
             <input type="text" class="comment-input" id="text-${proj.id}" placeholder="어떤 점이 좋았나요? 편하게 적어주세요!" required onfocus="handleInputFocus(this)" onblur="handleInputBlur()">
             <button type="submit" class="btn-submit-comment">등록하기</button>
           </form>
+
+          <button type="button" class="btn-close-bottom" onclick="closeModal(false)">닫기</button>
         </div>
       `;
       
@@ -532,15 +541,27 @@
       modal.classList.add('active');
       document.body.style.overflow = 'hidden'; 
       initCustomCursor(); 
+
+      // ★ 추가: 모달이 열릴 때 주소창 해시를 강제로 추가하여 History 스택을 쌓음
+      window.history.pushState({ modalOpen: true }, "", "#project-" + projectId);
     }
 
-    function closeModal() {
+    // ★ 수정: isFromHistory 파라미터를 추가하여 뒤로가기 버튼인지 확인
+    function closeModal(isFromHistory = false) {
       const modal = document.getElementById('project-modal');
+      // 이미 닫혀있으면 무시
+      if (!modal.classList.contains('active')) return;
+
       modal.classList.remove('active');
       document.body.style.overflow = '';
-      
-      // 모달 닫힐 때 여백 초기화
       document.getElementById('modal-content-area').classList.remove('keyboard-active');
+      
+      // 화면 내의 닫기 버튼이나 배경을 터치해서 닫은 경우 (안드로이드 뒤로가기가 아닌 경우)
+      // 강제로 쌓았던 History 스택을 하나 뒤로 돌려서 깔끔하게 정리해줍니다.
+      if (!isFromHistory) {
+        window.history.back();
+      }
+      
       fetchData(); 
     }
 
@@ -591,7 +612,7 @@
         commentList.appendChild(newComment);
         
         event.target.reset();
-        handleInputBlur(); // 전송 성공 후 입력창 내려가도록 조치
+        handleInputBlur(); 
       } catch(e) { showToast('❌ 등록에 실패했어요. 잠시 후 시도해주세요.'); } 
       finally { btn.textContent = '등록하기'; }
     }
