@@ -204,8 +204,17 @@
     .action-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 3rem; }
     .btn-action, .btn-visit { background: transparent; color: var(--text-main); border: 1px solid var(--border-color); padding: 1.2rem; border-radius: 8px; font-weight: 800; font-size: 1.05rem; text-align: center; text-decoration: none; cursor: none; transition: 0.3s; }
     .btn-action:hover { border-color: var(--accent); color: var(--accent); }
-    .btn-visit { background: var(--text-main); color: #000; }
+    .btn-visit { background: var(--text-main); color: #000; border: 1px solid var(--border-color); }
     .btn-visit:hover { background: var(--accent); color: #000; border-color: var(--accent); box-shadow: 0 0 20px var(--accent-glow); }
+
+    /* iOS 안내 배너 */
+    .ios-hint {
+      display: none; margin-bottom: 1rem;
+      padding: 1rem 1.2rem; background: rgba(0, 229, 255, 0.08);
+      border: 1px solid rgba(0, 229, 255, 0.3); border-radius: 8px;
+      font-size: 0.95rem; color: var(--accent); line-height: 1.5; word-break: keep-all;
+    }
+    .ios-hint.visible { display: block; }
 
     .comment-section-title { font-size: 1.3rem; font-weight: 800; margin-bottom: 1.5rem; border-top: 1px solid var(--border-color); padding-top: 3rem; }
     .comment-list { display: flex; flex-direction: column; gap: 1.5rem; margin-bottom: 2rem; }
@@ -219,7 +228,7 @@
     .btn-submit-comment { background: var(--text-main); color: #000; border: none; padding: 1.2rem; border-radius: 8px; font-weight: 900; font-size: 1.05rem; cursor: none; transition: 0.3s; }
     .btn-submit-comment:hover { background: var(--accent); }
 
-    /* 모달 하단 닫기 버튼 스타일 추가 */
+    /* 모달 하단 닫기 버튼 */
     .btn-close-bottom {
       background: transparent; color: var(--text-muted); border: 1px solid var(--border-color);
       padding: 1.2rem; border-radius: 8px; font-weight: 800; font-size: 1.05rem;
@@ -254,6 +263,8 @@
       .action-row { grid-template-columns: 1fr; }
       
       .btn-close-bottom { cursor: auto; margin-bottom: 2rem; }
+      .btn-visit { cursor: auto; }
+      .btn-action { cursor: auto; }
     }
   </style>
 </head>
@@ -334,15 +345,38 @@
     const GAS_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwjWz-_qAwgVkn5DAx_UNgZxh_fsIypktqJdFhCCcM05wgWZPgzBnLFb2qzGzMzp41FRA/exec';
     let globalData = { projects: [], comments: [], socials: [] };
 
+    // ★ 인앱브라우저 감지 유틸
+    const ua = navigator.userAgent || '';
+    const isAndroid = /Android/i.test(ua);
+    const isIOS = /iPhone|iPad|iPod/i.test(ua);
+    const isInAppBrowser = /Instagram|FBAN|FBAV|FB_IAB|Twitter|Line|KakaoTalk|NaverApp|YouTube|NAVER|Daum/i.test(ua);
+
+    // ★ 외부 링크 크롬/기본 브라우저로 열기
+    function openExternalLink(url) {
+      if (!url) return;
+
+      if (isAndroid && isInAppBrowser) {
+        // 안드로이드 인앱브라우저 → 크롬 intent로 강제 오픈
+        const cleanUrl = url.replace(/^https?:\/\//, '');
+        const intentUrl = 'intent://' + cleanUrl + '#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url=' + encodeURIComponent(url) + ';end';
+        window.location.href = intentUrl;
+      } else if (isIOS && isInAppBrowser) {
+        // iOS 인앱브라우저 → window.open 시도 (iOS는 강제 불가, 안내 배너가 보완)
+        window.open(url, '_blank', 'noopener,noreferrer');
+      } else {
+        // 일반 브라우저 → 새 탭으로 정상 오픈
+        window.open(url, '_blank', 'noopener,noreferrer');
+      }
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
       initCustomCursor();
       fetchData();
       setupContactForm();
       
-      // ★ 추가: 안드로이드 기기 뒤로가기 버튼 이벤트 리스너
+      // 안드로이드 뒤로가기 버튼 이벤트 리스너
       window.addEventListener('popstate', () => {
         const modal = document.getElementById('project-modal');
-        // 뒤로가기가 발생했는데 모달이 열려있다면 모달만 닫도록 지시 (true 파라미터 전달)
         if (modal.classList.contains('active')) {
           closeModal(true); 
         }
@@ -507,7 +541,17 @@
 
       const rawLink = String(proj.link || '').trim();
       const hasValidLink = rawLink.startsWith('http://') || rawLink.startsWith('https://');
-      const visitCtaHTML = hasValidLink ? `<a href="${rawLink}" target="_blank" class="btn-visit">서비스 구경가기 ↗</a>` : '';
+
+      // ★ 수정: <a> 대신 <button>으로 변경하여 openExternalLink 함수 사용
+      const visitCtaHTML = hasValidLink
+        ? `<button class="btn-visit" onclick="openExternalLink('${rawLink}')">서비스 구경가기 ↗</button>`
+        : '';
+
+      // ★ iOS 인앱브라우저일 때만 안내 배너 표시
+      const iosHintHTML = (isIOS && isInAppBrowser && hasValidLink)
+        ? `<div class="ios-hint visible">📌 인스타/스레드 앱 내 브라우저에서는 링크가 앱 안에서 열릴 수 있어요. 우하단 <strong>Safari에서 열기</strong> 버튼을 눌러주세요!</div>`
+        : '';
+
       const safeImgUrl = getSafeImageUrl(proj.image);
 
       const modalInner = document.getElementById('modal-inner-content');
@@ -518,6 +562,8 @@
           <h3 class="modal-title">${proj.title}</h3>
           <p class="modal-desc">${proj.desc}</p>
           
+          ${iosHintHTML}
+
           <div class="action-row">
             <button class="btn-action" onclick="handleLike('${proj.id}', this)">❤️ 응원하기 (${proj.likes || 0})</button>
             ${visitCtaHTML}
@@ -542,22 +588,19 @@
       document.body.style.overflow = 'hidden'; 
       initCustomCursor(); 
 
-      // ★ 추가: 모달이 열릴 때 주소창 해시를 강제로 추가하여 History 스택을 쌓음
+      // 모달이 열릴 때 History 스택을 쌓아 안드로이드 뒤로가기 대응
       window.history.pushState({ modalOpen: true }, "", "#project-" + projectId);
     }
 
-    // ★ 수정: isFromHistory 파라미터를 추가하여 뒤로가기 버튼인지 확인
     function closeModal(isFromHistory = false) {
       const modal = document.getElementById('project-modal');
-      // 이미 닫혀있으면 무시
       if (!modal.classList.contains('active')) return;
 
       modal.classList.remove('active');
       document.body.style.overflow = '';
       document.getElementById('modal-content-area').classList.remove('keyboard-active');
       
-      // 화면 내의 닫기 버튼이나 배경을 터치해서 닫은 경우 (안드로이드 뒤로가기가 아닌 경우)
-      // 강제로 쌓았던 History 스택을 하나 뒤로 돌려서 깔끔하게 정리해줍니다.
+      // 화면 내 닫기 버튼으로 닫은 경우, 쌓인 History 스택을 정리
       if (!isFromHistory) {
         window.history.back();
       }
